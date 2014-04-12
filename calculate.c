@@ -58,7 +58,7 @@ void tabulate(ComplexFunction fun,
     gsl_complex k = gsl_complex_sub(z1, z0);
     for (int i = 0; i < n; ++i)
     {
-        double t = (double)i / n;
+        double t = (double)i / (n - 1);
         gsl_complex z = gsl_complex_add(z0, gsl_complex_mul_real(k, t));
         gsl_complex f = fun(z, params);
         double abs = gsl_complex_abs(f);
