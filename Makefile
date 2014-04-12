@@ -6,8 +6,12 @@ clean:
 	rm -f calculate
 
 calculate: calculate.c
-	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas
+	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas -lm
 
 plot: calculate
 	./calculate >DATA
 	gnuplot plot-function.gnuplot
+
+ploti: calculate
+	./calculate >DATA
+	gnuplot plot-integral.gnuplot
