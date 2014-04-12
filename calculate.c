@@ -3,6 +3,8 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_integration.h>
 
+#define MAX_NPOINTS  100
+
 typedef enum { REAL, IMAG } ComplexPart;
 
 typedef struct Params_s
@@ -12,6 +14,12 @@ typedef struct Params_s
 } Params;
 
 typedef gsl_complex (* ComplexFunction) (gsl_complex x, void *params);
+
+typedef struct Contour_s
+{
+    unsigned npoints;
+    gsl_complex points[MAX_NPOINTS];
+} Contour;
 
 typedef struct AffineWrapperParams_s
 {
@@ -126,9 +134,9 @@ gsl_complex integrate_line_segment(Params *params,
     lsp.damping = params->r * GSL_IMAG(k);
     lsp.params = params;
 
-    fprintf(stderr, "p0 = %g %g, p1 = %g %g, k = %g %g, r = %g, omega = %g, damping = %g\n",
-            GSL_REAL(p0), GSL_IMAG(p0), GSL_REAL(p1), GSL_IMAG(p1),
-            GSL_REAL(k), GSL_IMAG(k), r, omega, lsp.damping);
+    //fprintf(stderr, "p0 = %g %g, p1 = %g %g, k = %g %g, r = %g, omega = %g, damping = %g\n",
+    //        GSL_REAL(p0), GSL_IMAG(p0), GSL_REAL(p1), GSL_IMAG(p1),
+    //        GSL_REAL(k), GSL_IMAG(k), r, omega, lsp.damping);
 
     gsl_function F;
     F.function = &line_segment_integrand_wrapper;
@@ -149,9 +157,9 @@ gsl_complex integrate_line_segment(Params *params,
     gsl_integration_qawo(&F, a, 0, epsrel, table_size, ws, table_cos, &result_imag_cos, &abserr_imag_cos);
     gsl_integration_qawo(&F, a, 0, epsrel, table_size, ws, table_sin, &result_imag_sin, &abserr_imag_sin);
 
-    fprintf(stderr, "    cos: %g (+- %g) %g (+- %g)  sin: %g (+- %g) %g (+- %g)\n",
-            result_real_cos, abserr_real_cos, result_imag_cos, abserr_imag_cos,
-            result_real_sin, abserr_real_sin, result_imag_sin, abserr_imag_sin);
+    //fprintf(stderr, "    cos: %g (+- %g) %g (+- %g)  sin: %g (+- %g) %g (+- %g)\n",
+    //        result_real_cos, abserr_real_cos, result_imag_cos, abserr_imag_cos,
+    //        result_real_sin, abserr_real_sin, result_imag_sin, abserr_imag_sin);
 
     gsl_complex cos_part = gsl_complex_rect(result_real_cos, result_imag_cos);
     gsl_complex sin_part = gsl_complex_rect(-result_imag_sin, result_real_sin);
@@ -169,9 +177,26 @@ gsl_complex integrate_line_segment(Params *params,
 }
 
 
+gsl_complex integrate_contour(Params *params,
+                              const Contour *contour)
+{
+    gsl_complex result = gsl_complex_rect(0.0, 0.0);
+
+    if (contour->npoints < 2)
+        return result;
+
+    for (unsigned i = 0; i < contour->npoints - 1; ++i)
+    {
+        result = gsl_complex_add(result,
+                integrate_line_segment(params, contour->points[i], contour->points[i+1]));
+    }
+
+    return result;
+}
+
+
 void tabulate_integral(Params *params,
-                       gsl_complex p0,
-                       gsl_complex p1,
+                       const Contour *contour,
                        double r0,
                        double r1,
                        int n)
@@ -181,7 +206,7 @@ void tabulate_integral(Params *params,
         double r = r0 + (r1 - r0) * ((double)i / (n - 1));
 
         params->r = r;
-        gsl_complex res = integrate_line_segment(params, p0, p1);
+        gsl_complex res = integrate_contour(params, contour);
 
         double abs = gsl_complex_abs(res);
 
@@ -212,9 +237,23 @@ int main(void)
              //gsl_complex_rect(-10,0), gsl_complex_rect(10,0),
              //10000);
 
+    double P = 10;
+    double peps = 0.1;
+
+    Contour contour;
+    contour.npoints = 8;
+    contour.points[0] = gsl_complex_rect(-P, 8.0);
+    contour.points[1] = gsl_complex_rect(-P, P);
+    contour.points[2] = gsl_complex_rect(-peps, P);
+    contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
+    contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
+    contour.points[5] = gsl_complex_rect(+peps, P);
+    contour.points[6] = gsl_complex_rect(+P, P);
+    contour.points[7] = gsl_complex_rect(+P, 8.0);
+
     tabulate_integral(
         &params,
-        gsl_complex_rect(-100,0.0), gsl_complex_rect(100,0.0),
+        &contour,
         0.1, 10,
         1000);
 
