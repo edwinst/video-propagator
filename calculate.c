@@ -216,6 +216,17 @@ void tabulate_integral(Params *params,
 }
 
 
+void emit_contour_points(const Params *params,
+                         const Contour *contour,
+                         FILE *os)
+{
+    for (unsigned i = 0; i < contour->npoints; ++i)
+    {
+        fprintf(os, "%g %g\n", GSL_REAL(contour->points[i]), GSL_IMAG(contour->points[i]));
+    }
+}
+
+
 int main(void)
 {
     Params params;
@@ -237,25 +248,29 @@ int main(void)
              //gsl_complex_rect(-10,0), gsl_complex_rect(10,0),
              //10000);
 
-    double P = 10;
-    double peps = 0.1;
+    double P = 50;
+    double peps = 0.2;
 
     Contour contour;
     contour.npoints = 8;
-    contour.points[0] = gsl_complex_rect(-P, 8.0);
+    contour.points[0] = gsl_complex_rect(-P, 20.0);
     contour.points[1] = gsl_complex_rect(-P, P);
     contour.points[2] = gsl_complex_rect(-peps, P);
     contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
     contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
     contour.points[5] = gsl_complex_rect(+peps, P);
     contour.points[6] = gsl_complex_rect(+P, P);
-    contour.points[7] = gsl_complex_rect(+P, 8.0);
+    contour.points[7] = gsl_complex_rect(+P, 20.0);
 
     tabulate_integral(
         &params,
         &contour,
         0.1, 10,
         1000);
+
+    FILE *os = fopen("CONTOUR", "w");
+    emit_contour_points(&params, &contour, os);
+    fclose(os);
 
     return 0;
 }
