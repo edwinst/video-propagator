@@ -18,5 +18,5 @@ ploti: calculate
 
 video:
 	for i in `seq 0 10` ; do cp PLOT-`printf '%04d' $$i`.png PLOT-`printf %04d $$((21-i))`.png ; done
-	avconv -i PLOT-%04d.png -vcodec mpeg4 test.avi
+	avconv -y -r 8 -i PLOT-%04d.png -r 24 -vcodec mpeg4 test.avi
 	vlc --no-video-title test.avi
