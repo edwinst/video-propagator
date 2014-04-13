@@ -314,6 +314,7 @@ void emit_plot_commands(const Params *params,
     "set origin 0,0\n"
     "set size 1,1\n"
     "\n"
+    "set xrange [0:10]\n"
     "set yrange [-15:15]\n"
     "set style fill solid 0.2\n"
     "\n"
@@ -361,37 +362,39 @@ int main(void)
              //gsl_complex_rect(-10,0), gsl_complex_rect(10,0),
              //10000);
 
-    double P = 60;
-    double peps = 0.2;
-
-    Contour contour;
-    memset(&contour, 0, sizeof(contour));
-
-    contour.npoints = 8;
-    contour.points[0] = gsl_complex_rect(-P, 0.0);
-    contour.points[1] = gsl_complex_rect(-P, P);
-    contour.points[2] = gsl_complex_rect(-peps, P);
-    contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
-    contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
-    contour.points[5] = gsl_complex_rect(+peps, P);
-    contour.points[6] = gsl_complex_rect(+P, P);
-    contour.points[7] = gsl_complex_rect(+P, 0.0);
-
-    contour.skip[0] = 0;
-    contour.skip[1] = 0;
-    contour.skip[2] = 0;
-    contour.skip[3] = 0;
-    contour.skip[4] = 0;
-    contour.skip[5] = 0;
-    contour.skip[6] = 0;
-    contour.skip[7] = 0;
-
     PlotContext ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.filename_contour = "CONTOUR";
 
+    double shorten = 10.0;
+
     for (int i = 0; i < 11; ++i)
     {
+        double P = 60;
+        double peps = 0.2;
+
+        Contour contour;
+        memset(&contour, 0, sizeof(contour));
+
+        contour.npoints = 8;
+        contour.points[0] = gsl_complex_rect(-P, 0.0);
+        contour.points[1] = gsl_complex_rect(-P, P);
+        contour.points[2] = gsl_complex_rect(-peps, P);
+        contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
+        contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
+        contour.points[5] = gsl_complex_rect(+peps, P);
+        contour.points[6] = gsl_complex_rect(+P, P);
+        contour.points[7] = gsl_complex_rect(+P, 0.0);
+
+        contour.skip[0] = 0;
+        contour.skip[1] = 0;
+        contour.skip[2] = 0;
+        contour.skip[3] = 0;
+        contour.skip[4] = 0;
+        contour.skip[5] = 0;
+        contour.skip[6] = 0;
+        contour.skip[7] = 0;
+
         ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
         ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
@@ -406,8 +409,8 @@ int main(void)
         tabulate_integral(
             &params,
             &contour,
-            0.1, 10,
-            500, os);
+            0.1, 10 / shorten,
+            500 / floor(shorten), os);
         fclose(os);
 
         os = fopen(ctx.filename_contour, "w");
