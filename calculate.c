@@ -18,6 +18,9 @@ typedef struct Params_s
 {
     double m;
     double r;
+    double Pr;
+    double Pi;
+    double peps;
 } Params;
 
 
@@ -341,11 +344,75 @@ void emit_plot_commands(const Params *params,
 }
 
 
+void define_contour_M(const Params *params,
+                      double t,
+                      double d,
+                      Contour *contour)
+{
+    memset(contour, 0, sizeof(*contour));
+
+    double Pr = params->Pr;
+    double peps = params->peps;
+
+    if (t <= params->m - peps)
+    {
+        contour->npoints = 4;
+        contour->points[0] = gsl_complex_rect(-Pr, d);
+        contour->points[1] = gsl_complex_rect(-Pr, t);
+        contour->points[2] = gsl_complex_rect(+Pr, t);
+        contour->points[3] = gsl_complex_rect(+Pr, d);
+    }
+    else
+    {
+        contour->npoints = 8;
+        contour->points[0] = gsl_complex_rect(-Pr, d);
+        contour->points[1] = gsl_complex_rect(-Pr, t);
+        contour->points[2] = gsl_complex_rect(-peps, t);
+        contour->points[3] = gsl_complex_rect(-peps, params->m - peps);
+        contour->points[4] = gsl_complex_rect(+peps, params->m - peps);
+        contour->points[5] = gsl_complex_rect(+peps, t);
+        contour->points[6] = gsl_complex_rect(+Pr, t);
+        contour->points[7] = gsl_complex_rect(+Pr, d);
+    }
+}
+
+
+void define_contour_V(const Params *params,
+                      double t,
+                      Contour *contour)
+{
+    memset(contour, 0, sizeof(*contour));
+
+    double Pr = params->Pr;
+    double Pi = params->Pi;
+    double peps = params->peps;
+
+    contour->npoints = 4;
+    if (t < 0.5)
+    {
+        contour->points[0] = gsl_complex_rect(-Pr, Pi*2*t);
+        contour->points[1] = gsl_complex_rect(-peps, params->m - peps);
+        contour->points[2] = gsl_complex_rect(+peps, params->m - peps);
+        contour->points[3] = gsl_complex_rect(+Pr, Pi*2*t);
+    }
+    else
+    {
+        contour->points[0] = gsl_complex_rect(-Pr+(2*t - 1.0)*(Pr-peps), Pi);
+        contour->points[1] = gsl_complex_rect(-peps, params->m - peps);
+        contour->points[2] = gsl_complex_rect(+peps, params->m - peps);
+        contour->points[3] = gsl_complex_rect(+Pr-(2*t - 1.0)*(Pr-peps), Pi);
+    }
+}
+
+
 int main(void)
 {
     Params params;
     params.m = 1;
     params.r = 2;
+    params.Pr = 60;
+    params.Pi = 60;
+    params.peps = 0.2;
 
     // AffineWrapperParams wp;
     // wp.fun = (ComplexFunction) &f_envelope;
@@ -370,30 +437,7 @@ int main(void)
 
     for (int i = 0; i < 11; ++i)
     {
-        double P = 60;
-        double peps = 0.2;
-
-        Contour contour;
-        memset(&contour, 0, sizeof(contour));
-
-        contour.npoints = 8;
-        contour.points[0] = gsl_complex_rect(-P, 0.0);
-        contour.points[1] = gsl_complex_rect(-P, P);
-        contour.points[2] = gsl_complex_rect(-peps, P);
-        contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
-        contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
-        contour.points[5] = gsl_complex_rect(+peps, P);
-        contour.points[6] = gsl_complex_rect(+P, P);
-        contour.points[7] = gsl_complex_rect(+P, 0.0);
-
-        contour.skip[0] = 0;
-        contour.skip[1] = 0;
-        contour.skip[2] = 0;
-        contour.skip[3] = 0;
-        contour.skip[4] = 0;
-        contour.skip[5] = 0;
-        contour.skip[6] = 0;
-        contour.skip[7] = 0;
+        double P = params.Pr;
 
         ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
         ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
@@ -402,8 +446,9 @@ int main(void)
         if (d > P)
             d = P;
         printf("d = %g\n", d);
-        contour.points[0] = gsl_complex_rect(-P, d);
-        contour.points[7] = gsl_complex_rect(+P, d);
+
+        Contour contour;
+        define_contour_M(&params, params.Pi, d, &contour);
 
         FILE *os = fopen(ctx.filename_data, "w");
         tabulate_integral(
