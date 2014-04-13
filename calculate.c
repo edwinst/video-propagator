@@ -1,11 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_integration.h>
 
 #define MAX_NPOINTS  100
 
+
 typedef enum { REAL, IMAG } ComplexPart;
+
 
 typedef struct Params_s
 {
@@ -13,13 +17,16 @@ typedef struct Params_s
     double r;
 } Params;
 
+
 typedef gsl_complex (* ComplexFunction) (gsl_complex x, void *params);
+
 
 typedef struct Contour_s
 {
     unsigned npoints;
     gsl_complex points[MAX_NPOINTS];
 } Contour;
+
 
 typedef struct AffineWrapperParams_s
 {
@@ -34,7 +41,23 @@ typedef struct PlotContext_s
 {
     char *filename_data;
     char *filename_contour;
+    char *filename_output;
 } PlotContext;
+
+
+char *alloc_sprintf(const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    int len = vsnprintf(NULL, 0, fmt, ap);
+    char *str = malloc((len + 1) * sizeof(char));
+    if (!str)
+        exit(1);
+    va_start(ap, fmt);
+    vsnprintf(str, len + 1, fmt, ap);
+    va_end(ap);
+    return str;
+}
 
 
 gsl_complex f_envelope(gsl_complex p, const Params *params)
@@ -154,7 +177,7 @@ gsl_complex integrate_line_segment(Params *params,
     double result_imag_cos, abserr_imag_cos;
     double result_imag_sin, abserr_imag_sin;
 
-    double epsrel = 1e-6;
+    double epsrel = 1e-3;
 
     lsp.part = REAL;
     gsl_integration_qawo(&F, a, 0, epsrel, table_size, ws, table_cos, &result_real_cos, &abserr_real_cos);
@@ -206,7 +229,8 @@ void tabulate_integral(Params *params,
                        const Contour *contour,
                        double r0,
                        double r1,
-                       int n)
+                       int n,
+                       FILE *os)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -217,8 +241,8 @@ void tabulate_integral(Params *params,
 
         double abs = gsl_complex_abs(res);
 
-        printf("%g %g %g %g %g\n",
-               r, GSL_REAL(res), GSL_IMAG(res), abs, -abs);
+        fprintf(os, "%g %g %g %g %g\n",
+                r, GSL_REAL(res), GSL_IMAG(res), abs, -abs);
     }
 }
 
@@ -254,8 +278,6 @@ void emit_plot_commands(const Params *params,
     "\n"
     "set origin 0.6, 0.1\n"
     "set size 0.4, 0.4\n"
-    "#set xrange [-100:100]\n"
-    "#set yrange [-100:100]\n"
     "set xrange [-5:5]\n"
     "set yrange [-1:5]\n"
     "set grid x2tics\n"
@@ -264,6 +286,18 @@ void emit_plot_commands(const Params *params,
     "set y2tics (0) format \"\" scale 0\n"
     "\n"
     "#set arrow from -80,0 to 80,0\n"
+    "plot \"<echo '0 1'\" with points notitle, \\\n"
+    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\n"
+    "set origin 0.4, 0.55\n"
+    "set size 0.3, 0.3\n"
+    "set xrange [-110:110]\n"
+    "set yrange [-1:5]\n"
+    "set grid x2tics\n"
+    "set grid y2tics\n"
+    "set x2tics (0) format \"\" scale 0\n"
+    "set y2tics (0) format \"\" scale 0\n"
+    "\n"
     "plot \"<echo '0 1'\" with points notitle, \\\n"
     "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
     "\n"
@@ -283,6 +317,7 @@ void emit_plot_commands(const Params *params,
     ctx->filename_data,
     ctx->filename_data,
     ctx->filename_data,
+    ctx->filename_contour,
     ctx->filename_contour,
     ctx->filename_contour);
 }
@@ -309,39 +344,56 @@ int main(void)
              //gsl_complex_rect(-10,0), gsl_complex_rect(10,0),
              //10000);
 
-    double P = 50;
+    double P = 60;
     double peps = 0.2;
 
     Contour contour;
     contour.npoints = 8;
-    contour.points[0] = gsl_complex_rect(-P, 20.0);
+    contour.points[0] = gsl_complex_rect(-P, 0.0);
     contour.points[1] = gsl_complex_rect(-P, P);
     contour.points[2] = gsl_complex_rect(-peps, P);
     contour.points[3] = gsl_complex_rect(-peps, params.m - peps);
     contour.points[4] = gsl_complex_rect(+peps, params.m - peps);
     contour.points[5] = gsl_complex_rect(+peps, P);
     contour.points[6] = gsl_complex_rect(+P, P);
-    contour.points[7] = gsl_complex_rect(+P, 20.0);
-
-    tabulate_integral(
-        &params,
-        &contour,
-        0.1, 10,
-        100);
+    contour.points[7] = gsl_complex_rect(+P, 0.0);
 
     PlotContext ctx;
     ctx.filename_data = "DATA";
     ctx.filename_contour = "CONTOUR";
 
-    FILE *os = fopen(ctx.filename_contour, "w");
-    emit_contour_points(&params, &contour, os);
-    fclose(os);
+    for (int i = 0; i < 10; ++i)
+    {
+        ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
-    os = fopen("PLOT", "w");
-    fprintf(os, "set terminal wxt size 1000,600\n");
-    emit_plot_commands(&params, &ctx, os);
-    fprintf(os, "pause -1\n");
-    fclose(os);
+        contour.points[0] = gsl_complex_rect(-P, i * 0.2);
+        contour.points[7] = gsl_complex_rect(+P, i * 0.2);
+
+        FILE *os = fopen(ctx.filename_data, "w");
+        tabulate_integral(
+            &params,
+            &contour,
+            0.1, 10,
+            300, os);
+        fclose(os);
+
+        os = fopen(ctx.filename_contour, "w");
+        emit_contour_points(&params, &contour, os);
+        fclose(os);
+
+        os = fopen("PLOT", "w");
+        fprintf(os, "set terminal png size 1000,600\n");
+        fprintf(os, "set output '%s'\n", ctx.filename_output);
+        emit_plot_commands(&params, &ctx, os);
+        fclose(os);
+
+        char *cmd = alloc_sprintf("gnuplot 'PLOT'");
+        system(cmd);
+        free(cmd);
+
+        free(ctx.filename_output);
+        ctx.filename_output = NULL;
+    }
 
     return 0;
 }

@@ -13,5 +13,5 @@ plot: calculate
 	gnuplot plot-function.gnuplot
 
 ploti: calculate
-	./calculate >DATA
-	gnuplot PLOT
+	./calculate
+	display PLOT-*.png
