@@ -14,4 +14,4 @@ plot: calculate
 
 ploti: calculate
 	./calculate >DATA
-	gnuplot plot-integral.gnuplot
+	gnuplot PLOT

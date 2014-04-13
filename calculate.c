@@ -30,6 +30,13 @@ typedef struct AffineWrapperParams_s
 } AffineWrapperParams;
 
 
+typedef struct PlotContext_s
+{
+    char *filename_data;
+    char *filename_contour;
+} PlotContext;
+
+
 gsl_complex f_envelope(gsl_complex p, const Params *params)
 {
     double m = params->m;
@@ -227,6 +234,60 @@ void emit_contour_points(const Params *params,
 }
 
 
+void emit_plot_commands(const Params *params,
+                        const PlotContext *ctx,
+                        FILE *os)
+{
+    fprintf(os,
+    "set size 1,1\n"
+    "set multiplot\n"
+    "\n"
+    "set origin 0,0\n"
+    "set size 1,1\n"
+    "\n"
+    "set yrange [-15:15]\n"
+    "set style fill solid 0.2\n"
+    "\n"
+    "plot \"%s\" using 1:5:4 with filledcurve lc 4 title \"abs\", \\\n"
+    "     \"%s\" using 1:2 with lines lc 1 title \"real\", \\\n"
+    "     \"%s\" using 1:3 with lines lc 3 title \"imag\"\n"
+    "\n"
+    "set origin 0.6, 0.1\n"
+    "set size 0.4, 0.4\n"
+    "#set xrange [-100:100]\n"
+    "#set yrange [-100:100]\n"
+    "set xrange [-5:5]\n"
+    "set yrange [-1:5]\n"
+    "set grid x2tics\n"
+    "set grid y2tics\n"
+    "set x2tics (0) format \"\" scale 0\n"
+    "set y2tics (0) format \"\" scale 0\n"
+    "\n"
+    "#set arrow from -80,0 to 80,0\n"
+    "plot \"<echo '0 1'\" with points notitle, \\\n"
+    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\n"
+    "set origin 0.7, 0.55\n"
+    "set size 0.3, 0.3\n"
+    "set xrange [-110:110]\n"
+    "set yrange [-10:110]\n"
+    "set grid x2tics\n"
+    "set grid y2tics\n"
+    "set x2tics (0) format \"\" scale 0\n"
+    "set y2tics (0) format \"\" scale 0\n"
+    "\n"
+    "plot \"<echo '0 1'\" with points notitle, \\\n"
+    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\n"
+    "unset multiplot\n",
+    ctx->filename_data,
+    ctx->filename_data,
+    ctx->filename_data,
+    ctx->filename_contour,
+    ctx->filename_contour);
+}
+
+
 int main(void)
 {
     Params params;
@@ -266,10 +327,20 @@ int main(void)
         &params,
         &contour,
         0.1, 10,
-        1000);
+        100);
 
-    FILE *os = fopen("CONTOUR", "w");
+    PlotContext ctx;
+    ctx.filename_data = "DATA";
+    ctx.filename_contour = "CONTOUR";
+
+    FILE *os = fopen(ctx.filename_contour, "w");
     emit_contour_points(&params, &contour, os);
+    fclose(os);
+
+    os = fopen("PLOT", "w");
+    fprintf(os, "set terminal wxt size 1000,600\n");
+    emit_plot_commands(&params, &ctx, os);
+    fprintf(os, "pause -1\n");
     fclose(os);
 
     return 0;
