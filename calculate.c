@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -42,6 +44,7 @@ typedef struct AffineWrapperParams_s
 typedef struct PlotContext_s
 {
     char *filename_data;
+    char *filename_baseline_data;
     char *filename_contour;
     char *filename_output;
 } PlotContext;
@@ -288,10 +291,21 @@ void emit_plot_commands(const Params *params,
     "set yrange [-15:15]\n"
     "set style fill solid 0.2\n"
     "\n"
-    "plot \"%s\" using 1:5:4 with filledcurve lc 4 title \"abs\", \\\n"
-    "     \"%s\" using 1:2 with lines lc 1 title \"real\", \\\n"
-    "     \"%s\" using 1:3 with lines lc 3 title \"imag\"\n"
-    "\n"
+    "plot ");
+
+    if (ctx->filename_baseline_data != 0)
+    {
+        fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc rgb 'gray40' title \"baseline\", \\\n     ",
+                ctx->filename_baseline_data);
+    }
+
+    fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc 4 title \"abs\", \\\n     "
+               "\"%s\" using 1:2 with lines lc 1 title \"real\", \\\n     "
+               "\"%s\" using 1:3 with lines lc 3 title \"imag\"",
+            ctx->filename_data, ctx->filename_data, ctx->filename_data);
+
+    fprintf(os,
+    "\n\n"
     "set origin 0.6, 0.1\n"
     "set size 0.4, 0.4\n"
     "set xrange [-5:5]\n"
@@ -330,9 +344,6 @@ void emit_plot_commands(const Params *params,
     "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
     "\n"
     "unset multiplot\n",
-    ctx->filename_data,
-    ctx->filename_data,
-    ctx->filename_data,
     ctx->filename_contour,
     ctx->filename_contour,
     ctx->filename_contour);
@@ -386,11 +397,12 @@ int main(void)
     contour.skip[7] = 0;
 
     PlotContext ctx;
-    ctx.filename_data = "DATA";
+    memset(&ctx, 0, sizeof(ctx));
     ctx.filename_contour = "CONTOUR";
 
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 11; ++i)
     {
+        ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
         ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
         double d = 0.1 * (pow(1.5, i) - 1.0);
@@ -405,7 +417,7 @@ int main(void)
             &params,
             &contour,
             0.1, 10,
-            300, os);
+            500, os);
         fclose(os);
 
         os = fopen(ctx.filename_contour, "w");
@@ -422,8 +434,11 @@ int main(void)
         system(cmd);
         free(cmd);
 
-        free(ctx.filename_output);
-        ctx.filename_output = NULL;
+        if (!ctx.filename_baseline_data)
+            ctx.filename_baseline_data = strdup(ctx.filename_data);
+
+        free(ctx.filename_output); ctx.filename_output = NULL;
+        free(ctx.filename_data); ctx.filename_data = NULL;
     }
 
     return 0;
