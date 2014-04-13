@@ -277,6 +277,32 @@ void emit_contour_points(const Params *params,
 }
 
 
+void emit_plot_contour_inset(const Params *params,
+                             const PlotContext *ctx,
+                             double ox, double oy, double sx, double sy,
+                             double xmin, double xmax, double ymin, double ymax,
+                             FILE *os)
+{
+    fprintf(os,
+    "set origin %g, %g\n"
+    "set size %g, %g\n"
+    "set xrange [%g:%g]\n"
+    "set yrange [%g:%g]\n"
+    "set grid x2tics\n"
+    "set grid y2tics\n"
+    "set x2tics (0) format \"\" scale 0\n"
+    "set y2tics (0) format \"\" scale 0\n"
+    "\n"
+    "plot \"<echo '0 %g'\" with points notitle, \\\n"
+    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\n",
+    ox, oy, sx, sy,
+    xmin, xmax, ymin, ymax,
+    params->m,
+    ctx->filename_contour);
+}
+
+
 void emit_plot_commands(const Params *params,
                         const PlotContext *ctx,
                         FILE *os)
@@ -304,49 +330,13 @@ void emit_plot_commands(const Params *params,
                "\"%s\" using 1:3 with lines lc 3 title \"imag\"",
             ctx->filename_data, ctx->filename_data, ctx->filename_data);
 
-    fprintf(os,
-    "\n\n"
-    "set origin 0.6, 0.1\n"
-    "set size 0.4, 0.4\n"
-    "set xrange [-5:5]\n"
-    "set yrange [-1:5]\n"
-    "set grid x2tics\n"
-    "set grid y2tics\n"
-    "set x2tics (0) format \"\" scale 0\n"
-    "set y2tics (0) format \"\" scale 0\n"
-    "\n"
-    "#set arrow from -80,0 to 80,0\n"
-    "plot \"<echo '0 1'\" with points notitle, \\\n"
-    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
-    "\n"
-    "set origin 0.4, 0.55\n"
-    "set size 0.3, 0.3\n"
-    "set xrange [-110:110]\n"
-    "set yrange [-1:5]\n"
-    "set grid x2tics\n"
-    "set grid y2tics\n"
-    "set x2tics (0) format \"\" scale 0\n"
-    "set y2tics (0) format \"\" scale 0\n"
-    "\n"
-    "plot \"<echo '0 1'\" with points notitle, \\\n"
-    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
-    "\n"
-    "set origin 0.7, 0.55\n"
-    "set size 0.3, 0.3\n"
-    "set xrange [-110:110]\n"
-    "set yrange [-10:110]\n"
-    "set grid x2tics\n"
-    "set grid y2tics\n"
-    "set x2tics (0) format \"\" scale 0\n"
-    "set y2tics (0) format \"\" scale 0\n"
-    "\n"
-    "plot \"<echo '0 1'\" with points notitle, \\\n"
-    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
-    "\n"
-    "unset multiplot\n",
-    ctx->filename_contour,
-    ctx->filename_contour,
-    ctx->filename_contour);
+    fprintf(os, "\n\n");
+
+    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.4, 0.4, -5,+5, -1, params->m+4, os);
+    emit_plot_contour_inset(params, ctx, 0.4, 0.55, 0.3, 0.3, -100,+100, -1, params->m+4, os);
+    emit_plot_contour_inset(params, ctx, 0.7, 0.55, 0.3, 0.3, -100,+100, -10,+100, os);
+
+    fprintf(os, "\nunset multiplot\n");
 }
 
 
