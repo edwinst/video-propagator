@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_integration.h>
@@ -25,6 +26,7 @@ typedef struct Contour_s
 {
     unsigned npoints;
     gsl_complex points[MAX_NPOINTS];
+    int skip[MAX_NPOINTS];
 } Contour;
 
 
@@ -217,6 +219,9 @@ gsl_complex integrate_contour(Params *params,
 
     for (unsigned i = 0; i < contour->npoints - 1; ++i)
     {
+        if (contour->skip[i])
+            continue;
+
         result = gsl_complex_add(result,
                 integrate_line_segment(params, contour->points[i], contour->points[i+1]));
     }
@@ -251,9 +256,20 @@ void emit_contour_points(const Params *params,
                          const Contour *contour,
                          FILE *os)
 {
+    int skipping = 1;
+
     for (unsigned i = 0; i < contour->npoints; ++i)
     {
-        fprintf(os, "%g %g\n", GSL_REAL(contour->points[i]), GSL_IMAG(contour->points[i]));
+        if (!skipping || !contour->skip[i])
+        {
+            fprintf(os, "%g %g\n", GSL_REAL(contour->points[i]), GSL_IMAG(contour->points[i]));
+
+            if (contour->skip[i])
+            {
+                fprintf(os, "\n");
+            }
+        }
+        skipping = contour->skip[i];
     }
 }
 
@@ -348,6 +364,8 @@ int main(void)
     double peps = 0.2;
 
     Contour contour;
+    memset(&contour, 0, sizeof(contour));
+
     contour.npoints = 8;
     contour.points[0] = gsl_complex_rect(-P, 0.0);
     contour.points[1] = gsl_complex_rect(-P, P);
@@ -358,6 +376,15 @@ int main(void)
     contour.points[6] = gsl_complex_rect(+P, P);
     contour.points[7] = gsl_complex_rect(+P, 0.0);
 
+    contour.skip[0] = 0;
+    contour.skip[1] = 0;
+    contour.skip[2] = 0;
+    contour.skip[3] = 0;
+    contour.skip[4] = 0;
+    contour.skip[5] = 0;
+    contour.skip[6] = 0;
+    contour.skip[7] = 0;
+
     PlotContext ctx;
     ctx.filename_data = "DATA";
     ctx.filename_contour = "CONTOUR";
@@ -366,8 +393,12 @@ int main(void)
     {
         ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
-        contour.points[0] = gsl_complex_rect(-P, i * 0.2);
-        contour.points[7] = gsl_complex_rect(+P, i * 0.2);
+        double d = 0.1 * (pow(1.5, i) - 1.0);
+        if (d > P)
+            d = P;
+        printf("d = %g\n", d);
+        contour.points[0] = gsl_complex_rect(-P, d);
+        contour.points[7] = gsl_complex_rect(+P, d);
 
         FILE *os = fopen(ctx.filename_data, "w");
         tabulate_integral(
