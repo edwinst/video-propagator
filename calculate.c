@@ -433,20 +433,19 @@ int main(void)
     memset(&ctx, 0, sizeof(ctx));
     ctx.filename_contour = "CONTOUR";
 
-    double shorten = 10.0;
+    double shorten = 1.0;
 
     for (int i = 0; i < 11; ++i)
     {
-        double P = params.Pr;
-
         ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
         ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
         double d = 0.1 * (pow(1.5, i) - 1.0);
-        if (d > P)
-            d = P;
+        if (d > params.Pi)
+            d = params.Pi;
         printf("d = %g\n", d);
 
+        //params.Pr = 60 + (i-5) * 0.5;
         Contour contour;
         define_contour_M(&params, params.Pi, d, &contour);
 
@@ -463,7 +462,7 @@ int main(void)
         fclose(os);
 
         os = fopen("PLOT", "w");
-        fprintf(os, "set terminal png size 1000,600\n");
+        fprintf(os, "set terminal pngcairo size 1000,600\n");
         fprintf(os, "set output '%s'\n", ctx.filename_output);
         emit_plot_commands(&params, &ctx, os);
         fclose(os);
