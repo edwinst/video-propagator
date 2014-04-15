@@ -284,6 +284,7 @@ void emit_plot_contour_inset(const Params *params,
                              const PlotContext *ctx,
                              double ox, double oy, double sx, double sy,
                              double xmin, double xmax, double ymin, double ymax,
+                             int plot_m,
                              FILE *os)
 {
     fprintf(os,
@@ -294,14 +295,24 @@ void emit_plot_contour_inset(const Params *params,
     "set grid x2tics\n"
     "set grid y2tics\n"
     "set x2tics (0) format \"\" scale 0\n"
-    "set y2tics (0) format \"\" scale 0\n"
-    "\n"
-    "plot \"<echo '0 %g'\" with points notitle, \\\n"
-    "     \"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
-    "\n",
+    "set y2tics (0) format \"\" scale 0\n",
     ox, oy, sx, sy,
-    xmin, xmax, ymin, ymax,
-    params->m,
+    xmin, xmax, ymin, ymax);
+
+    if ((xmax - xmin) >= 100)
+        fprintf(os, "set xtics 40\n");
+    else
+        fprintf(os, "set xtics 1\n");
+
+    fprintf(os, "\nplot ");
+
+    if (plot_m)
+        fprintf(os, "\"<echo '0 %g'\" with points notitle, \\\n     ",
+                params->m);
+
+    fprintf(os,
+    "\"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\n",
     ctx->filename_contour);
 }
 
@@ -319,13 +330,13 @@ void emit_plot_commands(const Params *params,
     "\n"
     "set xrange [0:10]\n"
     "set yrange [-15:15]\n"
-    "set style fill solid 0.2\n"
+    "set style fill solid 0.4\n"
     "\n"
     "plot ");
 
     if (ctx->filename_baseline_data != 0)
     {
-        fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc rgb 'gray40' title \"baseline\", \\\n     ",
+        fprintf(os,"\"%s\" using 1:4 with lines linestyle 0 lc rgb 'gray40' notitle, \\\n     ",
                 ctx->filename_baseline_data);
     }
 
@@ -336,11 +347,17 @@ void emit_plot_commands(const Params *params,
 
     fprintf(os, "\n\n");
 
-    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.4, 0.4, -5,+5, -1, params->m+4, os);
-    emit_plot_contour_inset(params, ctx, 0.4, 0.55, 0.3, 0.3, -100,+100, -1, params->m+4, os);
-    emit_plot_contour_inset(params, ctx, 0.7, 0.55, 0.3, 0.3, -100,+100, -10,+100, os);
+    emit_plot_contour_inset(params, ctx, 0.2, 0.1, 0.3, 0.3, -90,+90, -10,+90, 0, os);
+    emit_plot_contour_inset(params, ctx, 0.45, 0.1, 0.3, 0.3, -90,+90, -1, params->m+4, 0, os);
+    emit_plot_contour_inset(params, ctx, 0.7, 0.1, 0.3, 0.3, -4.5,+4.5, -1, params->m+3, 1, os);
 
     fprintf(os, "\nunset multiplot\n");
+}
+
+
+double pos(double x)
+{
+    return (x > 0) ? x : 0;
 }
 
 
@@ -352,6 +369,7 @@ void define_contour_M(const Params *params,
     memset(contour, 0, sizeof(*contour));
 
     double Pr = params->Pr;
+    double Pi = params->Pi;
     double peps = params->peps;
 
     if (t <= params->m - peps)
@@ -364,15 +382,30 @@ void define_contour_M(const Params *params,
     }
     else
     {
-        contour->npoints = 8;
-        contour->points[0] = gsl_complex_rect(-Pr, d);
-        contour->points[1] = gsl_complex_rect(-Pr, t);
-        contour->points[2] = gsl_complex_rect(-peps, t);
-        contour->points[3] = gsl_complex_rect(-peps, params->m - peps);
-        contour->points[4] = gsl_complex_rect(+peps, params->m - peps);
-        contour->points[5] = gsl_complex_rect(+peps, t);
-        contour->points[6] = gsl_complex_rect(+Pr, t);
-        contour->points[7] = gsl_complex_rect(+Pr, d);
+        int i = 0;
+
+        if (d < 1.0)
+            contour->points[i++] = gsl_complex_rect(-Pr, Pi*d);
+
+        if (d < 2.0)
+            contour->points[i++] = gsl_complex_rect(-Pr+pos(d - 1.0)*(Pr - peps), Pi);
+
+        if (d < 3.0)
+            contour->points[i++] = gsl_complex_rect(-peps, Pi-pos(d - 2.0)*(Pi - params->m + peps));
+
+        contour->points[i++] = gsl_complex_rect(-peps, params->m - peps);
+        contour->points[i++] = gsl_complex_rect(+peps, params->m - peps);
+
+        if (d < 3.0)
+            contour->points[i++] = gsl_complex_rect(+peps, Pi-pos(d - 2.0)*(Pi - params->m + peps));
+
+        if (d < 2.0)
+            contour->points[i++] = gsl_complex_rect(+Pr-pos(d - 1.0)*(Pr - peps), Pi);
+
+        if (d < 1.0)
+            contour->points[i++] = gsl_complex_rect(+Pr, Pi*d);
+
+        contour->npoints = i;
     }
 }
 
