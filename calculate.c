@@ -100,7 +100,8 @@ gsl_complex affine_wrapper(double x, void *data)
 }
 
 
-void tabulate(ComplexFunction fun,
+void tabulate(FILE *os,
+              ComplexFunction fun,
               void *params,
               gsl_complex z0,
               gsl_complex z1,
@@ -114,10 +115,10 @@ void tabulate(ComplexFunction fun,
         gsl_complex f = fun(z, params);
         double abs = gsl_complex_abs(f);
 
-        printf("%g %g %g %g %g %g %g\n",
-               t,
-               GSL_REAL(z), GSL_IMAG(z),
-               GSL_REAL(f), GSL_IMAG(f), abs, -abs);
+        fprintf(os, "%g %g %g %g %g %g %g\n",
+                t,
+                GSL_REAL(z), GSL_IMAG(z),
+                GSL_REAL(f), GSL_IMAG(f), abs, -abs);
     }
 }
 
@@ -319,6 +320,52 @@ void emit_plot_contour_inset(const Params *params,
 }
 
 
+void emit_plot_commands_function(const Params *params,
+                                 const PlotContext *ctx,
+                                 const Contour *contour,
+                                 FILE *os)
+{
+    fprintf(os,
+    "set size 1,1\n"
+    "set multiplot\n"
+    "\n"
+    "set origin 0,0\n"
+    "set size 1,1\n"
+    "\n"
+    "set xrange [0:1]\n"
+    "set yrange [-1:1]\n"
+    "set style fill solid 0.4\n"
+    "\n");
+
+    fprintf(os, "set xtics (");
+    for (int i = 0; i < 5 ; ++i)
+    {
+        double t = i / 4.0;
+        gsl_complex z = gsl_complex_add(contour->points[0],
+                gsl_complex_mul_real(gsl_complex_sub(contour->points[1], contour->points[0]), t));
+        if (i)
+           fprintf(os, ", ");
+        fprintf(os, "\"(%g + %g i)\" %g", GSL_REAL(z), GSL_IMAG(z), t);
+    }
+    fprintf(os, ")\n");
+
+    fprintf(os, "set object 1 rectangle from graph 0.62,0.05 to graph 0.92,0.4 front fc rgb \"white\"\n");
+    fprintf(os, "\nplot ");
+
+    fprintf(os,"\"%s\" using 1:7:6 with filledcurve lc 4 title \"abs\", \\\n     "
+               "\"%s\" using 1:4 with lines lc 1 title \"real\", \\\n     "
+               "\"%s\" using 1:5 with lines lc 3 title \"imag\"",
+            ctx->filename_data, ctx->filename_data, ctx->filename_data);
+
+    fprintf(os, "\n\n");
+    fprintf(os, "unset object 1\n");
+
+    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -4.5,+4.5, -1, params->m+3, 1, os);
+
+    fprintf(os, "\nunset multiplot\n");
+}
+
+
 void emit_plot_commands(const Params *params,
                         const PlotContext *ctx,
                         FILE *os)
@@ -354,6 +401,18 @@ void emit_plot_commands(const Params *params,
     emit_plot_contour_inset(params, ctx, 0.7, 0.1, 0.3, 0.3, -4.5,+4.5, -1, params->m+3, 1, os);
 
     fprintf(os, "\nunset multiplot\n");
+}
+
+
+void define_contour_line_segment(gsl_complex z0,
+                                 gsl_complex z1,
+                                 Contour *contour)
+{
+    memset(contour, 0, sizeof(*contour));
+
+    contour->npoints = 2;
+    contour->points[0] = z0;
+    contour->points[1] = z1;
 }
 
 
@@ -455,6 +514,13 @@ enum {
 };
 
 
+void parse_double(const char *str, double *dest)
+{
+    char *end;
+    *dest = strtod(str, &end);
+}
+
+
 void parse_complex(const char *str, gsl_complex *dest)
 {
     const char *comma = strchr(str, ',');
@@ -494,7 +560,9 @@ int main(int argc, char **argv)
       { "help",      0, NULL, 'h' },
       { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
       { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "m",         1, NULL, 'm' },
       { "prefix",    1, NULL, 'p' },
+      { "r",         1, NULL, 'r' },
       { "z0",        1, NULL, '0' },
       { "z1",        1, NULL, '1' },
       { NULL,        0, NULL, 0   } /* end */
@@ -509,8 +577,16 @@ int main(int argc, char **argv)
             case 'h':
                 print_usage(stdout, 0);
 
+            case 'm':
+                parse_double(optarg, &params.m);
+                break;
+
             case 'p':
                 opt_prefix = optarg;
+                break;
+
+            case 'r':
+                parse_double(optarg, &params.r);
                 break;
 
             case '?':
@@ -534,22 +610,37 @@ int main(int argc, char **argv)
     }
     while (next_option != -1);
 
-    if (opt_select == OPT_SELECT_ENVELOPE)
+    PlotContext ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.filename_contour = alloc_sprintf("%sCONTOUR.dat", opt_prefix);
+
+    if (opt_select != OPT_SELECT_INTEGRAL)
     {
-        tabulate((ComplexFunction) &f_envelope, &params,
-                 opt_z0, opt_z1, opt_n);
-    }
-    else if (opt_select == OPT_SELECT_INTEGRAND)
-    {
-        tabulate((ComplexFunction) &f_integrand, &params,
-                 opt_z0, opt_z1, opt_n);
+        ctx.filename_data = alloc_sprintf("%sFUNCTION.dat", opt_prefix);
+        ctx.filename_output = alloc_sprintf("%splot.png", opt_prefix);
+        const char *script = alloc_sprintf("%sPLOT.gnuplot", opt_prefix);
+
+        FILE *os = fopen(ctx.filename_data, "w");
+        tabulate(os, (ComplexFunction)
+                ((opt_select == OPT_SELECT_INTEGRAND) ? &f_integrand : &f_envelope),
+                &params, opt_z0, opt_z1, opt_n);
+        fclose(os);
+
+        Contour contour;
+        define_contour_line_segment(opt_z0, opt_z1, &contour);
+
+        os = fopen(ctx.filename_contour, "w");
+        emit_contour_points(&params, &contour, os);
+        fclose(os);
+
+        os = fopen(script, "w");
+        fprintf(os, "set terminal pngcairo size 1000,600\n");
+        fprintf(os, "set output '%s'\n", ctx.filename_output);
+        emit_plot_commands_function(&params, &ctx, &contour, os);
+        fclose(os);
     }
     else
     {
-        PlotContext ctx;
-        memset(&ctx, 0, sizeof(ctx));
-        ctx.filename_contour = "CONTOUR";
-
         double shorten = 1.0;
 
         for (int i = 0; i < 11; ++i)
