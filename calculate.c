@@ -1,9 +1,11 @@
 #define _GNU_SOURCE
 
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_integration.h>
@@ -438,7 +440,40 @@ void define_contour_V(const Params *params,
 }
 
 
-int main(void)
+void print_usage(FILE *os, int exitcode)
+{
+    fprintf(os, "Usage: ./calculate [--prefix=PREFIX]\n\n");
+
+    exit(exitcode);
+}
+
+
+enum {
+    OPT_SELECT_ENVELOPE,
+    OPT_SELECT_INTEGRAND,
+    OPT_SELECT_INTEGRAL
+};
+
+
+void parse_complex(const char *str, gsl_complex *dest)
+{
+    const char *comma = strchr(str, ',');
+    if (comma != NULL)
+    {
+        char *end;
+        GSL_SET_REAL(dest, strtod(str, &end));
+        GSL_SET_IMAG(dest, strtod(comma + 1, &end));
+    }
+    else
+    {
+        char *end;
+        GSL_SET_REAL(dest, strtod(str, &end));
+        GSL_SET_IMAG(dest, 0.0);
+    }
+}
+
+
+int main(int argc, char **argv)
 {
     Params params;
     params.m = 1;
@@ -447,68 +482,118 @@ int main(void)
     params.Pi = 60;
     params.peps = 0.2;
 
-    // AffineWrapperParams wp;
-    // wp.fun = (ComplexFunction) &f_envelope;
-    // wp.d = gsl_complex_rect(0,-1);
-    // wp.k = gsl_complex_rect(2,1);
-    // wp.params = &params;
+    const char* opt_prefix = "";
+    int opt_select = OPT_SELECT_INTEGRAL;
+    gsl_complex opt_z0 = { { 0.0 } };
+    gsl_complex opt_z1 = { { 0.0 } };
+    int opt_n = 10000;
 
-    //tabulate((ComplexFunction) &f_integrand, &params,
-             //gsl_complex_rect(0,-10), gsl_complex_rect(0,10),
-             //gsl_complex_rect(-10,0.9), gsl_complex_rect(10,0.9),
-             //gsl_complex_rect(-10,-10), gsl_complex_rect(10,10),
-             //gsl_complex_rect(-0.5,-10), gsl_complex_rect(0.5,10),
-             //gsl_complex_rect(-10,1), gsl_complex_rect(10,1),
-             //gsl_complex_rect(-10,0), gsl_complex_rect(10,0),
-             //10000);
+    const char* const short_options = "";
 
-    PlotContext ctx;
-    memset(&ctx, 0, sizeof(ctx));
-    ctx.filename_contour = "CONTOUR";
+    const struct option long_options[] = {
+      { "help",      0, NULL, 'h' },
+      { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
+      { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "prefix",    1, NULL, 'p' },
+      { "z0",        1, NULL, '0' },
+      { "z1",        1, NULL, '1' },
+      { NULL,        0, NULL, 0   } /* end */
+    };
 
-    double shorten = 1.0;
+    int next_option;
+    do {
+        next_option = getopt_long(argc, argv, short_options,
+                long_options, NULL);
+        switch (next_option)
+        {
+            case 'h':
+                print_usage(stdout, 0);
 
-    for (int i = 0; i < 11; ++i)
+            case 'p':
+                opt_prefix = optarg;
+                break;
+
+            case '?':
+                // invalid option
+                print_usage(stderr, 1);
+
+            case '0':
+                parse_complex(optarg, &opt_z0);
+                break;
+
+            case '1':
+                parse_complex(optarg, &opt_z1);
+                break;
+
+            case 0:  break; // flag handled
+            case -1: break; // end of options
+
+            default:
+                abort ();
+        }
+    }
+    while (next_option != -1);
+
+    if (opt_select == OPT_SELECT_ENVELOPE)
     {
-        ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
-        ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
+        tabulate((ComplexFunction) &f_envelope, &params,
+                 opt_z0, opt_z1, opt_n);
+    }
+    else if (opt_select == OPT_SELECT_INTEGRAND)
+    {
+        tabulate((ComplexFunction) &f_integrand, &params,
+                 opt_z0, opt_z1, opt_n);
+    }
+    else
+    {
+        PlotContext ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.filename_contour = "CONTOUR";
 
-        double d = 0.1 * (pow(1.5, i) - 1.0);
-        if (d > params.Pi)
-            d = params.Pi;
-        printf("d = %g\n", d);
+        double shorten = 1.0;
 
-        //params.Pr = 60 + (i-5) * 0.5;
-        Contour contour;
-        define_contour_M(&params, params.Pi, d, &contour);
+        for (int i = 0; i < 11; ++i)
+        {
+            ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
+            ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
 
-        FILE *os = fopen(ctx.filename_data, "w");
-        tabulate_integral(
-            &params,
-            &contour,
-            0.1, 10 / shorten,
-            500 / floor(shorten), os);
-        fclose(os);
+            double d = 0.1 * (pow(1.5, i) - 1.0);
+            if (d > params.Pi)
+                d = params.Pi;
+            printf("d = %g\n", d);
 
-        os = fopen(ctx.filename_contour, "w");
-        emit_contour_points(&params, &contour, os);
-        fclose(os);
+            //params.Pr = 60 + (i-5) * 0.5;
+            Contour contour;
+            define_contour_M(&params, params.Pi, d, &contour);
 
-        os = fopen("PLOT", "w");
-        fprintf(os, "set terminal pngcairo size 1000,600\n");
-        fprintf(os, "set output '%s'\n", ctx.filename_output);
-        emit_plot_commands(&params, &ctx, os);
-        fclose(os);
+            FILE *os = fopen(ctx.filename_data, "w");
+            tabulate_integral(
+                &params,
+                &contour,
+                0.1, 10 / shorten,
+                500 / floor(shorten), os);
+            fclose(os);
 
-        char *cmd = alloc_sprintf("gnuplot 'PLOT'");
-        system(cmd);
-        free(cmd);
+            os = fopen(ctx.filename_contour, "w");
+            emit_contour_points(&params, &contour, os);
+            fclose(os);
 
-        if (!ctx.filename_baseline_data)
-            ctx.filename_baseline_data = strdup(ctx.filename_data);
+            os = fopen("PLOT", "w");
+            fprintf(os, "set terminal pngcairo size 1000,600\n");
+            fprintf(os, "set output '%s'\n", ctx.filename_output);
+            emit_plot_commands(&params, &ctx, os);
+            fclose(os);
 
-        free(ctx.filename_output); ctx.filename_output = NULL;
-        free(ctx.filename_data); ctx.filename_data = NULL;
+            char *cmd = alloc_sprintf("gnuplot 'PLOT'");
+            system(cmd);
+            free(cmd);
+
+            if (!ctx.filename_baseline_data)
+                ctx.filename_baseline_data = strdup(ctx.filename_data);
+
+            free(ctx.filename_output); ctx.filename_output = NULL;
+            free(ctx.filename_data); ctx.filename_data = NULL;
+        }
     }
 
     return 0;
