@@ -23,6 +23,8 @@ typedef struct Params_s
     double Pr;
     double Pi;
     double peps;
+    double t;
+    double d;
 } Params;
 
 
@@ -188,7 +190,7 @@ gsl_complex integrate_line_segment(Params *params,
     double result_imag_cos, abserr_imag_cos;
     double result_imag_sin, abserr_imag_sin;
 
-    double epsrel = 1e-3;
+    double epsrel = 1e-6;
 
     lsp.part = REAL;
     gsl_integration_qawo(&F, a, 0, epsrel, table_size, ws, table_cos, &result_real_cos, &abserr_real_cos);
@@ -314,7 +316,7 @@ void emit_plot_contour_inset(const Params *params,
                 params->m);
 
     fprintf(os,
-    "\"%s\" using 1:2 with lines lc rgb 'blue' notitle\n"
+    "\"%s\" using 1:2 with lines lw 2 lc rgb 'blue' notitle\n"
     "\n",
     ctx->filename_contour);
 }
@@ -391,7 +393,7 @@ void emit_plot_commands(const Params *params,
                 ctx->filename_baseline_data);
     }
 
-    fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc 4 title \"abs\", \\\n     "
+    fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
                "\"%s\" using 1:2 with lines lc 1 title \"real\", \\\n     "
                "\"%s\" using 1:3 with lines lc 3 title \"imag\"",
             ctx->filename_data, ctx->filename_data, ctx->filename_data);
@@ -515,6 +517,10 @@ enum {
     OPT_SELECT_INTEGRAL
 };
 
+enum {
+    OPT_CONTOUR_M
+};
+
 
 void parse_double(const char *str, double *dest)
 {
@@ -549,9 +555,11 @@ int main(int argc, char **argv)
     params.Pr = 60;
     params.Pi = 60;
     params.peps = 0.2;
+    params.t = 0.0;
 
     const char* opt_prefix = "";
     int opt_select = OPT_SELECT_INTEGRAL;
+    int opt_contour = OPT_CONTOUR_M;
     gsl_complex opt_z0 = { { 0.0 } };
     gsl_complex opt_z1 = { { 0.0 } };
     int opt_n = 10000;
@@ -562,12 +570,15 @@ int main(int argc, char **argv)
       { "help",      0, NULL, 'h' },
       { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
       { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "d",         1, NULL, 'd' },
       { "n",         1, NULL, 'n' },
       { "m",         1, NULL, 'm' },
       { "prefix",    1, NULL, 'p' },
       { "r",         1, NULL, 'r' },
+      { "t",         1, NULL, 't' },
       { "z0",        1, NULL, '0' },
       { "z1",        1, NULL, '1' },
+      { "Pr",        1, NULL, 'P' },
       { NULL,        0, NULL, 0   } /* end */
     };
 
@@ -579,6 +590,10 @@ int main(int argc, char **argv)
         {
             case 'h':
                 print_usage(stdout, 0);
+
+            case 'd':
+                parse_double(optarg, &params.d);
+                break;
 
             case 'm':
                 parse_double(optarg, &params.m);
@@ -598,6 +613,10 @@ int main(int argc, char **argv)
                 parse_double(optarg, &params.r);
                 break;
 
+            case 't':
+                parse_double(optarg, &params.t);
+                break;
+
             case '?':
                 // invalid option
                 print_usage(stderr, 1);
@@ -608,6 +627,10 @@ int main(int argc, char **argv)
 
             case '1':
                 parse_complex(optarg, &opt_z1);
+                break;
+
+            case 'P':
+                parse_double(optarg, &params.Pr);
                 break;
 
             case 0:  break; // flag handled
@@ -622,13 +645,12 @@ int main(int argc, char **argv)
     PlotContext ctx;
     memset(&ctx, 0, sizeof(ctx));
     ctx.filename_contour = alloc_sprintf("%sCONTOUR.dat", opt_prefix);
+    ctx.filename_data = alloc_sprintf("%sFUNCTION.dat", opt_prefix);
+    ctx.filename_output = alloc_sprintf("%splot.png", opt_prefix);
+    const char *script = alloc_sprintf("%sPLOT.gnuplot", opt_prefix);
 
     if (opt_select != OPT_SELECT_INTEGRAL)
     {
-        ctx.filename_data = alloc_sprintf("%sFUNCTION.dat", opt_prefix);
-        ctx.filename_output = alloc_sprintf("%splot.png", opt_prefix);
-        const char *script = alloc_sprintf("%sPLOT.gnuplot", opt_prefix);
-
         FILE *os = fopen(ctx.filename_data, "w");
         tabulate(os, (ComplexFunction)
                 ((opt_select == OPT_SELECT_INTEGRAND) ? &f_integrand : &f_envelope),
@@ -650,50 +672,26 @@ int main(int argc, char **argv)
     }
     else
     {
-        double shorten = 1.0;
+        Contour contour;
+        define_contour_M(&params, params.t, params.d, &contour);
 
-        for (int i = 0; i < 11; ++i)
-        {
-            ctx.filename_data = alloc_sprintf("DATA-%04d.dat", i);
-            ctx.filename_output = alloc_sprintf("PLOT-%04d.png", i);
+        FILE *os = fopen(ctx.filename_data, "w");
+        tabulate_integral(
+            &params,
+            &contour,
+            GSL_REAL(opt_z0), GSL_REAL(opt_z1),
+            opt_n, os);
+        fclose(os);
 
-            double d = 0.1 * (pow(1.5, i) - 1.0);
-            if (d > params.Pi)
-                d = params.Pi;
-            printf("d = %g\n", d);
+        os = fopen(ctx.filename_contour, "w");
+        emit_contour_points(&params, &contour, os);
+        fclose(os);
 
-            //params.Pr = 60 + (i-5) * 0.5;
-            Contour contour;
-            define_contour_M(&params, params.Pi, d, &contour);
-
-            FILE *os = fopen(ctx.filename_data, "w");
-            tabulate_integral(
-                &params,
-                &contour,
-                0.1, 10 / shorten,
-                500 / floor(shorten), os);
-            fclose(os);
-
-            os = fopen(ctx.filename_contour, "w");
-            emit_contour_points(&params, &contour, os);
-            fclose(os);
-
-            os = fopen("PLOT", "w");
-            fprintf(os, "set terminal pngcairo size 1000,600\n");
-            fprintf(os, "set output '%s'\n", ctx.filename_output);
-            emit_plot_commands(&params, &ctx, os);
-            fclose(os);
-
-            char *cmd = alloc_sprintf("gnuplot 'PLOT'");
-            system(cmd);
-            free(cmd);
-
-            if (!ctx.filename_baseline_data)
-                ctx.filename_baseline_data = strdup(ctx.filename_data);
-
-            free(ctx.filename_output); ctx.filename_output = NULL;
-            free(ctx.filename_data); ctx.filename_data = NULL;
-        }
+        os = fopen(script, "w");
+        fprintf(os, "set terminal pngcairo size 1000,600\n");
+        fprintf(os, "set output '%s'\n", ctx.filename_output);
+        emit_plot_commands(&params, &ctx, os);
+        fclose(os);
     }
 
     return 0;

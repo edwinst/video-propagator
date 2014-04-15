@@ -21,7 +21,7 @@ video:
 	avconv -y -r 8 -i PLOT-%04d.png -r 24 -vcodec mpeg4 test.avi
 
 video2:
-	for i in `seq 0 140` ; do cp test-`printf '%04d' $$i`-plot.png test-`printf %04d $$((281-i))`-plot.png ; done
+	for i in `seq 0 10` ; do cp test-`printf '%04d' $$i`-plot.png test-`printf %04d $$((21-i))`-plot.png ; done
 	avconv -y -r 12 -i test-%04d-plot.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
 
 slides.pdf: slides.tex
