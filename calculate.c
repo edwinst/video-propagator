@@ -331,9 +331,11 @@ void emit_plot_commands_function(const Params *params,
     "\n"
     "set origin 0,0\n"
     "set size 1,1\n"
+    "set lmargin 6\n"
+    "set rmargin 6\n"
     "\n"
     "set xrange [0:1]\n"
-    "set yrange [-1:1]\n"
+    "set yrange [-3:3]\n"
     "set style fill solid 0.4\n"
     "\n");
 
@@ -345,14 +347,14 @@ void emit_plot_commands_function(const Params *params,
                 gsl_complex_mul_real(gsl_complex_sub(contour->points[1], contour->points[0]), t));
         if (i)
            fprintf(os, ", ");
-        fprintf(os, "\"(%g + %g i)\" %g", GSL_REAL(z), GSL_IMAG(z), t);
+        fprintf(os, "\"(%4.2g + %4.2g i)\" %g", GSL_REAL(z), GSL_IMAG(z), t);
     }
     fprintf(os, ")\n");
 
     fprintf(os, "set object 1 rectangle from graph 0.62,0.05 to graph 0.92,0.4 front fc rgb \"white\"\n");
     fprintf(os, "\nplot ");
 
-    fprintf(os,"\"%s\" using 1:7:6 with filledcurve lc 4 title \"abs\", \\\n     "
+    fprintf(os,"\"%s\" using 1:7:6 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
                "\"%s\" using 1:4 with lines lc 1 title \"real\", \\\n     "
                "\"%s\" using 1:5 with lines lc 3 title \"imag\"",
             ctx->filename_data, ctx->filename_data, ctx->filename_data);
@@ -360,7 +362,7 @@ void emit_plot_commands_function(const Params *params,
     fprintf(os, "\n\n");
     fprintf(os, "unset object 1\n");
 
-    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -4.5,+4.5, -1, params->m+3, 1, os);
+    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -4.5,+4.5, -1, 4, 1, os);
 
     fprintf(os, "\nunset multiplot\n");
 }
@@ -560,6 +562,7 @@ int main(int argc, char **argv)
       { "help",      0, NULL, 'h' },
       { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
       { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "n",         1, NULL, 'n' },
       { "m",         1, NULL, 'm' },
       { "prefix",    1, NULL, 'p' },
       { "r",         1, NULL, 'r' },
@@ -579,6 +582,12 @@ int main(int argc, char **argv)
 
             case 'm':
                 parse_double(optarg, &params.m);
+                break;
+
+            case 'n':
+                opt_n = atoi(optarg);
+                if (opt_n < 1)
+                    opt_n = 1;
                 break;
 
             case 'p':
