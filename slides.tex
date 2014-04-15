@@ -1,0 +1,117 @@
+\documentclass{beamer}
+
+\newcommand{\envelope}{\frac{p}{\sqrt{p^2 + m^2}}}
+\newcommand{\integrand}{\frac{p e^{ipr}}{\sqrt{p^2 + m^2}}}
+\newcommand{\CC}{\mathbb{C}}
+
+\begin{document}
+\begin{frame}
+2-point function of a free scalar field, for purely spatial separations $r > 0$:
+
+$$\int_{-\infty}^{\infty} dp \integrand.$$
+
+Problem: This integral does not converge! (Neither in Lebesgue's
+nor Riemann's sense.)
+\end{frame}
+
+
+\begin{frame}
+Let's consider the integrand
+
+$$\integrand$$
+
+as a complex function of $p \in \CC$.
+
+\end{frame}
+
+
+\begin{frame}
+Actually, let's first look at
+
+$$\envelope$$
+
+No surprises on the real line:
+
+$$\envelope \ \rightarrow \ 1 \ \textrm{ for } p \rightarrow +\infty,$$
+
+$$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
+
+\end{frame}
+
+% animate envelope on the real line, varying m
+
+
+\begin{frame}
+It gets more interesting for complex $p$:
+
+$$\envelope$$
+
+For $|p| \rightarrow \infty$ this goes to  a pure phase.
+
+But there are branch point singularities at $p = im$ and $p = -im$.
+
+With the branch cut of the square root on the negative real axis,
+the branch  cut of the integrand lies along the imaginary axis towards $+i\infty$ and $-i\infty$.
+\end{frame}
+
+% animate envelope on the real line, rotate to imaginary axis
+
+% animate to show the branch cut
+
+
+\begin{frame}
+Including the exponential we get
+
+$$\integrand$$
+
+which is
+
+\begin{itemize}
+\item \emph{oscillating} along the real axis,
+
+\item \emph{exponentially damped} in the upper half plane.
+\end{itemize}
+\end{frame}
+
+% animate integrand on the real line, rotating to vertical segments to show damping
+
+
+\begin{frame}
+Let's try a sharp cutoff at $p = \pm \Lambda$:
+
+$$\int_{-\Lambda}^{+\Lambda} dp \integrand$$
+
+It looks like this as a function of $r$ (varying $\Lambda$):
+\end{frame}
+
+% show integral, vary Lambda, vary m(?)
+
+
+\begin{frame}
+There's a strong oscillation at the cutoff (spatial) frequency $\Lambda$
+which seems superposed onto a function falling exponentially with $r$.
+
+By deforming the integration contour we can show that it is indeed only
+the cutoff momentum that contributes to the oscillations.
+
+Witness the miracle of Cauchy's theorem!
+\end{frame}
+
+% animate the M contour
+
+
+
+
+% XXX smoothing
+
+
+\begin{frame}
+\frametitle{Software Credits}
+
+Numerical integration: GNU Scientific Library
+
+Plotting: gnuplot
+
+Presentation: \LaTeX + avconv
+\end{frame}
+\end{document}
