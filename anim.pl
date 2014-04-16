@@ -16,6 +16,6 @@ for my $i (0..10)
     my $t = 60;
     my $d = $i * 0.1 / 60;
     my $Pr = 40 + $i;
-    #system("./calculate --n 50 --prefix $pre --z0 0.1 --z1 1 --m 1 --t $t --d $d && gnuplot ${pre}PLOT.gnuplot");
-    system("./calculate --n 500 --prefix $pre --z0 0.1 --z1 10 --m 1 --t 0 --Pr $Pr && gnuplot ${pre}PLOT.gnuplot");
+    system("./calculate --n 500 --prefix $pre --z0 0.1 --z1 10 --m 1 --Pr 45 --t 45 --d $d && gnuplot ${pre}PLOT.gnuplot");
+    #system("./calculate --n 500 --prefix $pre --z0 0.1 --z1 10 --m 1 --t 0 --Pr $Pr && gnuplot ${pre}PLOT.gnuplot");
 }

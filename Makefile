@@ -29,3 +29,13 @@ slides.pdf: slides.tex
 
 slides: slides.pdf
 	evince -f slides.pdf
+
+slides-png: slides.pdf
+	rm -rf slides-png
+	mkdir -p slides-png
+	gs -sDEVICE=pngalpha -sOutputFile=slides-png/slide-%04d.png -r144 -dBATCH -dNOPAUSE slides.pdf
+
+animate: slides-png
+	rm -rf links
+	./animate.pl
+	avconv -y -r 12 -i links/link-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
