@@ -1,9 +1,10 @@
+SHELL = /bin/bash
 CFLAGS = -g -Wall -std=c99
 
 all: calculate
 
 clean:
-	rm -f calculate
+	rm -rf slides-png links calculate slides.{pdf,aux,toc,log,nav,out,snm}
 
 calculate: calculate.c
 	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas -lm
@@ -39,3 +40,4 @@ animate: slides-png
 	rm -rf links
 	./animate.pl
 	avconv -y -r 12 -i links/link-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
+
