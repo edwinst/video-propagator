@@ -5,8 +5,6 @@ use Math::Trig;
 
 my @images;
 
-my @slide_images = sort glob('slides-png/*.png');
-
 my $opt_prefix = 'tmp/';
 my $opt_frame_rate = 24;
 my $opt_frame_div = 4;
@@ -19,17 +17,6 @@ my @frame_links;
 my $page_counter = 0;
 
 open(my $makefile, '>', 'Makefile.generated') or die;
-
-my $i = 0;
-for my $img (@slide_images)
-{
-    for (0..49)
-    {
-        my $linkname = $opt_links_dir.'/link-'.sprintf('%06d', $i).'.png';
-        link($img, $linkname);
-        $i++;
-    }
-}
 
 sub generate_id
 {
@@ -52,7 +39,7 @@ sub add_make_rule
 sub add_frame
 {
     my ($path) = @_;
-    my $fn_link = sprintf("links/frame-%06d.png", $frame_counter++);
+    my $fn_link = sprintf("$opt_links_dir/frame-%06d.png", $frame_counter++);
     push @frame_links, [$fn_link, $path];
 }
 
