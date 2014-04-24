@@ -18,8 +18,7 @@ ploti: calculate
 	display PLOT-*.png
 
 video:
-	for i in `seq 0 10` ; do cp PLOT-`printf '%04d' $$i`.png PLOT-`printf %04d $$((21-i))`.png ; done
-	avconv -y -r 8 -i PLOT-%04d.png -r 24 -vcodec mpeg4 test.avi
+	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
 
 video2:
 	for i in `seq 0 10` ; do cp test-`printf '%04d' $$i`-plot.png test-`printf %04d $$((21-i))`-plot.png ; done
