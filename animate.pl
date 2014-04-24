@@ -75,8 +75,10 @@ sub animate
         my $fn_plot = "${prefix}PLOT.gnuplot";
         my $fn_frame = "${prefix}plot.png";
 
-        add_make_rule([$fn_data, $fn_contour, $fn_plot], ['calculate'],
+        add_make_rule([$fn_data, $fn_contour], ['calculate'],
                       "./calculate --prefix '$prefix' $cmd");
+        add_make_rule([$fn_plot], ['gen_plot_script.pl'],
+                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_frame' --terminal 'pngcairo size 1000,600' $cmd > '$fn_plot'");
         add_make_rule([$fn_frame], [$fn_data, $fn_contour, $fn_plot],
                       "gnuplot '$fn_plot'");
         add_frame($fn_frame) for 1..$opt_frame_div;

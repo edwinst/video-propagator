@@ -51,9 +51,7 @@ typedef struct AffineWrapperParams_s
 typedef struct PlotContext_s
 {
     char *filename_data;
-    char *filename_baseline_data;
     char *filename_contour;
-    char *filename_output;
 } PlotContext;
 
 
@@ -282,129 +280,6 @@ void emit_contour_points(const Params *params,
         }
         skipping = contour->skip[i];
     }
-}
-
-
-void emit_plot_contour_inset(const Params *params,
-                             const PlotContext *ctx,
-                             double ox, double oy, double sx, double sy,
-                             double xmin, double xmax, double ymin, double ymax,
-                             int plot_m,
-                             FILE *os)
-{
-    fprintf(os,
-    "set origin %g, %g\n"
-    "set size %g, %g\n"
-    "set xrange [%g:%g]\n"
-    "set yrange [%g:%g]\n"
-    "set grid x2tics\n"
-    "set grid y2tics\n"
-    "set x2tics (0) format \"\" scale 0\n"
-    "set y2tics (0) format \"\" scale 0\n",
-    ox, oy, sx, sy,
-    xmin, xmax, ymin, ymax);
-
-    if ((xmax - xmin) >= 100)
-        fprintf(os, "set xtics 40\n");
-    else
-        fprintf(os, "set xtics 1\n");
-
-    fprintf(os, "\nplot ");
-
-    if (plot_m)
-        fprintf(os, "\"<echo '0 %g'\" with points notitle, \\\n     ",
-                params->m);
-
-    fprintf(os,
-    "\"%s\" using 1:2 with lines lw 2 lc rgb 'blue' notitle\n"
-    "\n",
-    ctx->filename_contour);
-}
-
-
-void emit_plot_commands_function(const Params *params,
-                                 const PlotContext *ctx,
-                                 const Contour *contour,
-                                 FILE *os)
-{
-    fprintf(os,
-    "set size 1,1\n"
-    "set multiplot\n"
-    "\n"
-    "set origin 0,0\n"
-    "set size 1,1\n"
-    "set lmargin 6\n"
-    "set rmargin 6\n"
-    "\n"
-    "set xrange [0:1]\n"
-    "set yrange [-3:3]\n"
-    "set style fill solid 0.4\n"
-    "\n");
-
-    fprintf(os, "set xtics (");
-    for (int i = 0; i < 5 ; ++i)
-    {
-        double t = i / 4.0;
-        gsl_complex z = gsl_complex_add(contour->points[0],
-                gsl_complex_mul_real(gsl_complex_sub(contour->points[1], contour->points[0]), t));
-        if (i)
-           fprintf(os, ", ");
-        fprintf(os, "\"(%4.2g + %4.2g i)\" %g", GSL_REAL(z), GSL_IMAG(z), t);
-    }
-    fprintf(os, ")\n");
-
-    fprintf(os, "set object 1 rectangle from graph 0.62,0.05 to graph 0.92,0.4 front fc rgb \"white\"\n");
-    fprintf(os, "\nplot ");
-
-    fprintf(os,"\"%s\" using 1:7:6 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
-               "\"%s\" using 1:4 with lines lc 1 title \"real\", \\\n     "
-               "\"%s\" using 1:5 with lines lc 3 title \"imag\"",
-            ctx->filename_data, ctx->filename_data, ctx->filename_data);
-
-    fprintf(os, "\n\n");
-    fprintf(os, "unset object 1\n");
-
-    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -10.5,+10.5, -1, 4, 1, os);
-
-    fprintf(os, "\nunset multiplot\n");
-}
-
-
-void emit_plot_commands(const Params *params,
-                        const PlotContext *ctx,
-                        FILE *os)
-{
-    fprintf(os,
-    "set size 1,1\n"
-    "set multiplot\n"
-    "\n"
-    "set origin 0,0\n"
-    "set size 1,1\n"
-    "\n"
-    "set xrange [0:10]\n"
-    "set yrange [-15:15]\n"
-    "set style fill solid 0.4\n"
-    "\n"
-    "plot ");
-
-    if (ctx->filename_baseline_data != 0)
-    {
-        fprintf(os,"\"%s\" using 1:4 with lines linestyle 0 lc rgb 'gray40' notitle, \\\n     ",
-                ctx->filename_baseline_data);
-    }
-
-    fprintf(os,"\"%s\" using 1:5:4 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
-               "\"%s\" using 1:2 with lines lc 1 title \"real\", \\\n     "
-               "\"%s\" using 1:3 with lines lc 3 title \"imag\"",
-            ctx->filename_data, ctx->filename_data, ctx->filename_data);
-
-    fprintf(os, "\n\n");
-
-    emit_plot_contour_inset(params, ctx, 0.2, 0.1, 0.3, 0.3, -90,+90, -10,+90, 0, os);
-    emit_plot_contour_inset(params, ctx, 0.45, 0.1, 0.3, 0.3, -90,+90, -1, params->m+4, 0, os);
-    emit_plot_contour_inset(params, ctx, 0.7, 0.1, 0.3, 0.3, -4.5,+4.5, -1, params->m+3, 1, os);
-
-    fprintf(os, "\nunset multiplot\n");
 }
 
 
@@ -646,8 +521,6 @@ int main(int argc, char **argv)
     memset(&ctx, 0, sizeof(ctx));
     ctx.filename_contour = alloc_sprintf("%sCONTOUR.dat", opt_prefix);
     ctx.filename_data = alloc_sprintf("%sFUNCTION.dat", opt_prefix);
-    ctx.filename_output = alloc_sprintf("%splot.png", opt_prefix);
-    const char *script = alloc_sprintf("%sPLOT.gnuplot", opt_prefix);
 
     if (opt_select != OPT_SELECT_INTEGRAL)
     {
@@ -662,12 +535,6 @@ int main(int argc, char **argv)
 
         os = fopen(ctx.filename_contour, "w");
         emit_contour_points(&params, &contour, os);
-        fclose(os);
-
-        os = fopen(script, "w");
-        fprintf(os, "set terminal pngcairo size 1000,600\n");
-        fprintf(os, "set output '%s'\n", ctx.filename_output);
-        emit_plot_commands_function(&params, &ctx, &contour, os);
         fclose(os);
     }
     else
@@ -685,12 +552,6 @@ int main(int argc, char **argv)
 
         os = fopen(ctx.filename_contour, "w");
         emit_contour_points(&params, &contour, os);
-        fclose(os);
-
-        os = fopen(script, "w");
-        fprintf(os, "set terminal pngcairo size 1000,600\n");
-        fprintf(os, "set output '%s'\n", ctx.filename_output);
-        emit_plot_commands(&params, &ctx, os);
         fclose(os);
     }
 
