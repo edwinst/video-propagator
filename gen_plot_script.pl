@@ -68,6 +68,10 @@ sub emit_plot_contour_inset
     {
         print $file "set xtics 40\n";
     }
+    elsif (($xmax - $xmin) >= 10)
+    {
+        print $file "set xtics 5\n";
+    }
     else
     {
         print $file "set xtics 1\n";
