@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Math::Trig;
 
 my @images;
 
@@ -57,19 +58,14 @@ sub add_frame
 
 sub animate
 {
-    my ($secs, $opts, @params) = @_;
+    my ($secs, $code) = @_;
 
     my $nframes = $secs * $opt_frame_rate / $opt_frame_div;
     for my $i (0 .. ($nframes-1))
     {
         print "FRAME: $i / $nframes\n";
         my $t = $i / ($nframes - 1);
-        my @args;
-        for my $param (@params)
-        {
-            push @args, ref($param) ? $param->($t) : $param;
-        }
-        my $cmd = sprintf($opts, @args);
+        my $cmd = $code->($t);
         print "CMD: $cmd\n";
 
         my $id = generate_id($cmd);
@@ -79,7 +75,7 @@ sub animate
         my $fn_plot = "${prefix}PLOT.gnuplot";
         my $fn_frame = "${prefix}plot.png";
 
-        add_make_rule([$fn_data, $fn_contour, $fn_plot], [],
+        add_make_rule([$fn_data, $fn_contour, $fn_plot], ['calculate'],
                       "./calculate --prefix '$prefix' $cmd");
         add_make_rule([$fn_frame], [$fn_data, $fn_contour, $fn_plot],
                       "gnuplot '$fn_plot'");
@@ -93,7 +89,9 @@ while (<>)
     if (/^\s*%:(.*)/)
     {
         my ($line) = ($1);
+        print "EVAL: $line\n";
         eval($line);
+        die $@ if $@;
     }
     elsif (/^\s*\\begin{frame}/)
     {
@@ -104,7 +102,7 @@ while (<>)
     }
 }
 
-print $makefile "\n.PHONY: link-frames render-frames\n";
+print $makefile "\n.PHONY: link-frames render-frames gen-frames\n";
 print $makefile "\nlink-frames:\n";
 print $makefile "\tln -sf ../$_->[1] $_->[0]\n" for @frame_links;
 print $makefile "\nrender-frames: ";
@@ -115,4 +113,5 @@ for my $frame (@frame_links)
     print $makefile "\\\n    $fn_frame" unless $seen{$fn_frame}++;
 }
 print $makefile "\n";
+print $makefile "\ngen-frames: render-frames link-frames\n";
 

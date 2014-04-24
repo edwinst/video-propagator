@@ -17,7 +17,11 @@ ploti: calculate
 	./calculate
 	display PLOT-*.png
 
-video:
+video: animate.pl slides.tex
+	rm -rf links Makefile.generated
+	mkdir links
+	./animate.pl <slides.tex
+	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
 
 video2:

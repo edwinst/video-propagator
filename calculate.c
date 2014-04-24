@@ -364,7 +364,7 @@ void emit_plot_commands_function(const Params *params,
     fprintf(os, "\n\n");
     fprintf(os, "unset object 1\n");
 
-    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -4.5,+4.5, -1, 4, 1, os);
+    emit_plot_contour_inset(params, ctx, 0.6, 0.1, 0.3, 0.3, -10.5,+10.5, -1, 4, 1, os);
 
     fprintf(os, "\nunset multiplot\n");
 }
