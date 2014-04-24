@@ -50,10 +50,8 @@ sub animate
     my $nframes = $secs * $opt_frame_rate / $opt_frame_div;
     for my $i (0 .. ($nframes-1))
     {
-        print "FRAME: $i / $nframes\n";
         my $t = $i / ($nframes - 1);
         my $cmd = $code->($t);
-        print "CMD: $cmd\n";
 
         my $id = generate_id($cmd);
         my $prefix = "$opt_prefix$id-";
@@ -78,7 +76,6 @@ while (<>)
     if (/^\s*%:(.*)/)
     {
         my ($line) = ($1);
-        print "EVAL: $line\n";
         eval($line);
         die $@ if $@;
     }
