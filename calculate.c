@@ -39,15 +39,6 @@ typedef struct Contour_s
 } Contour;
 
 
-typedef struct AffineWrapperParams_s
-{
-    ComplexFunction fun;
-    gsl_complex d;
-    gsl_complex k;
-    void *params;
-} AffineWrapperParams;
-
-
 typedef struct PlotContext_s
 {
     char *filename_data;
@@ -87,16 +78,6 @@ gsl_complex f_integrand(gsl_complex p, const Params *params)
     return gsl_complex_mul(
             f_envelope(p, params),
             gsl_complex_exp(gsl_complex_mul_imag(p, r)));
-}
-
-gsl_complex affine_wrapper(double x, void *data)
-{
-    const AffineWrapperParams *params = (const AffineWrapperParams *)data;
-
-    gsl_complex z = gsl_complex_add(params->d,
-            gsl_complex_mul_real(params->k, x));
-
-    return params->fun(z, params->params);
 }
 
 
