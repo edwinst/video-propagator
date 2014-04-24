@@ -4,7 +4,9 @@ CFLAGS = -g -Wall -std=c99
 all: calculate
 
 clean:
-	rm -rf slides-png links calculate slides.{pdf,aux,toc,log,nav,out,snm}
+	rm -rf slides-png links tmp calculate \
+            slides.{pdf,aux,toc,log,nav,out,snm} Makefile.generated \
+            test.avi
 
 calculate: calculate.c
 	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas -lm
@@ -17,9 +19,9 @@ ploti: calculate
 	./calculate
 	display PLOT-*.png
 
-video: animate.pl slides.tex
+video: calculate animate.pl slides-png
 	rm -rf links Makefile.generated
-	mkdir links
+	mkdir -p links tmp
 	./animate.pl <slides.tex
 	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
