@@ -71,20 +71,31 @@ sub animate
 }
 
 my @animations;
+my $code = '';
 while (<>)
 {
     if (/^\s*%:(.*)/)
     {
         my ($line) = ($1);
-        eval($line);
-        die $@ if $@;
+        $code .= "$line\n";
     }
-    elsif (/^\s*\\begin{frame}/)
+    else
     {
-        $page_counter++;
-        my $fn_frame = sprintf("slides-png/slide-%04d.png", $page_counter);
-        my $nframes = 3 * $opt_frame_rate;
-        add_frame($fn_frame) for 1..$nframes;
+        if ($code ne '')
+        {
+            print "CODE: >>>$code<<<\n";
+            eval($code);
+            die $@ if $@;
+            $code = '';
+        }
+
+        if (/^\s*\\begin{frame}/)
+        {
+            $page_counter++;
+            my $fn_frame = sprintf("slides-png/slide-%04d.png", $page_counter);
+            my $nframes = 3 * $opt_frame_rate;
+            add_frame($fn_frame) for 1..$nframes;
+        }
     }
 }
 

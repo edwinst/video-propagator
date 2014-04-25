@@ -39,8 +39,8 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 \end{frame}
 
 % animate envelope on the real line, varying m
-%: animate(3, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 1 })
-%: animate(5, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 2 - cos($_[0] * 2*pi * 3) })
+%: animate(3, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 1 });
+%: animate(5, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 2 - cos($_[0] * 2*pi * 3) });
 
 
 \begin{frame}
@@ -59,7 +59,11 @@ the branch  cut of the integrand lies along the imaginary axis towards $+i\infty
 % animate envelope on the real line, rotate to imaginary axis
 
 % animate to show the branch cut
-%: animate(24, sub { my $w = sin($_[0] * pi * 3); my $y = 2*$w*$w; sprintf '--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y })
+%: animate(24, sub {
+%:     my $w = sin($_[0] * pi * 3);
+%:     my $y = 2*$w*$w;
+%:     sprintf '--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y
+%: });
 
 \begin{frame}
 Including the exponential we get
