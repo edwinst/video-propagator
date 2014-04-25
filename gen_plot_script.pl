@@ -13,6 +13,7 @@ my $opt_envelope = 0;
 my $opt_integrand = 0;
 my $opt_z0 = '0,0';
 my $opt_z1 = '0,0';
+my @opt_pre_plot;
 
 sub parse_complex
 {
@@ -38,6 +39,7 @@ my $result = GetOptions(
         "output-file=s" => \$opt_filename_output,
         "data-file=s" => \$opt_filename_data,
         "contour-file=s" => \$opt_filename_contour,
+        "pre-plot=s" => \@opt_pre_plot,
 );
 parse_complex(\$opt_z0);
 parse_complex(\$opt_z1);
@@ -119,6 +121,9 @@ sub emit_plot_commands_function
     print $file ")\n";
 
     print $file "set object 1 rectangle from graph 0.62,0.05 to graph 0.92,0.4 front fc rgb \"white\"\n";
+
+    print $file "$_\n" for (@opt_pre_plot);
+
     print $file "\nplot ";
 
     printf $file "\"%s\" using 1:7:6 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
@@ -127,6 +132,7 @@ sub emit_plot_commands_function
             $opt_filename_data, $opt_filename_data, $opt_filename_data;
 
     print $file "\n\n";
+    print $file "unset label\n";
     print $file "unset object 1\n";
 
     emit_plot_contour_inset($file, 0.6, 0.1, 0.3, 0.3, -10.5,+10.5, -1, 4, 1);
@@ -149,14 +155,17 @@ sub emit_plot_commands
     ."set xrange [0:10]\n"
     ."set yrange [-15:15]\n"
     ."set style fill solid 0.4\n"
-    ."\n"
-    ."plot ";
+    ."\n";
 
-    printf $file "\"%s\" using 1:5:4 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
+    print $file "$_\n" for (@opt_pre_plot);
+
+    printf $file "plot \"%s\" using 1:5:4 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
                ."\"%s\" using 1:2 with lines lc 1 title \"real\", \\\n     "
                ."\"%s\" using 1:3 with lines lc 3 title \"imag\"",
         $opt_filename_data, $opt_filename_data, $opt_filename_data;
 
+    print $file "\n\n";
+    print $file "unset label\n";
     print $file "\n\n";
 
     emit_plot_contour_inset($file, 0.2, 0.1, 0.3, 0.3, -90,+90, -10,+90, 0);

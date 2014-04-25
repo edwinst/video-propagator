@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Digest::MD5 qw(md5_hex);
 use Math::Trig;
 
 my @images;
@@ -43,6 +44,31 @@ sub add_frame
     push @frame_links, [$fn_link, $path];
 }
 
+
+sub t_ab
+{
+    my ($n, $beg, $mid, $end, $t) = @_;
+    return 0 if $t <= $beg;
+
+    $t -= $beg;
+    my $delta = (1 - $beg - $end - ($n - 1) * $mid) / $n;
+    my $direction = 1;
+    for my $i (1..$n)
+    {
+        if ($t < $delta)
+        {
+            return 0.5 * (1 - $direction) + $direction * $t / $delta;
+        }
+        $t -= $delta;
+        $direction = -$direction;
+        return 0.5 * (1 - $direction) if $t < $mid;
+        $t -= $mid;
+    }
+
+    return 0.5 * (1 - $direction);
+}
+
+
 sub animate
 {
     my ($secs, $code) = @_;
@@ -53,17 +79,26 @@ sub animate
         my $t = $i / ($nframes - 1);
         my $cmd = $code->($t);
 
+        my $plot_opts = '';
+        my $plot_id = '';
+        if (ref($cmd))
+        {
+            ($cmd, $plot_opts) = @$cmd;
+            $plot_id = md5_hex($plot_opts);
+            $plot_opts =~ s/\n/\\\n/g;
+        }
+
         my $id = generate_id($cmd);
         my $prefix = "$opt_prefix$id-";
         my $fn_data = "${prefix}FUNCTION.dat";
         my $fn_contour = "${prefix}CONTOUR.dat";
-        my $fn_plot = "${prefix}PLOT.gnuplot";
-        my $fn_frame = "${prefix}plot.png";
+        my $fn_plot = "${prefix}${plot_id}PLOT.gnuplot";
+        my $fn_frame = "${prefix}${plot_id}plot.png";
 
         add_make_rule([$fn_data, $fn_contour], ['calculate'],
                       "./calculate --prefix '$prefix' $cmd");
         add_make_rule([$fn_plot], ['gen_plot_script.pl'],
-                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_frame' --terminal 'pngcairo size 1000,600' $cmd > '$fn_plot'");
+                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_frame' --terminal 'pngcairo size 1000,600' $plot_opts $cmd > '$fn_plot'");
         add_make_rule([$fn_frame], [$fn_data, $fn_contour, $fn_plot],
                       "gnuplot '$fn_plot'");
         add_frame($fn_frame) for 1..$opt_frame_div;

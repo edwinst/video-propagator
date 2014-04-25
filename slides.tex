@@ -40,7 +40,15 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 
 % animate envelope on the real line, varying m
 %: animate(3, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 1 });
-%: animate(5, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 2 - cos($_[0] * 2*pi * 3) });
+
+%: animate(8, sub {
+%:     my $t = t_ab(3, 0.1, 0.1, 0.1, $_[0]);
+%:     my $m = 1 + 2*$t;
+%:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "varying the mass" at 0.25,2 font "serif,20"'
+%:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,20"'}, $m)]
+%: });
 
 
 \begin{frame}
@@ -59,6 +67,7 @@ the branch  cut of the integrand lies along the imaginary axis towards $+i\infty
 % animate envelope on the real line, rotate to imaginary axis
 
 % animate to show the branch cut
+
 %: animate(24, sub {
 %:     my $w = sin($_[0] * pi * 3);
 %:     my $y = 2*$w*$w;
