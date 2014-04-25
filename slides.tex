@@ -158,7 +158,9 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 % show integral, vary Lambda, vary m(?)
 
 %: $opts = '--n 250 --z0 0.1 --z1 5 --m 1';
-%: animate(3, sub { $opts.' --Pr 45 --Pi 0 --d 0' });
+%: animate(3, sub {
+%:     [$opts.' --Pr 45 --Pi 0 --d 0', '', 'label-integral.png -geometry +120+80 -composite']
+%: });
 
 %: animate(20, sub {
 %:     my $Pr = t_xaby(5, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
@@ -244,6 +246,6 @@ Numerical integration: GNU Scientific Library
 
 Plotting: gnuplot
 
-Presentation: \TeX + \LaTeX + Beamer, avconv
+Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 \end{frame}
 \end{document}

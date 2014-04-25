@@ -127,27 +127,37 @@ sub animate
         my $cmd = $code->($t);
 
         my $plot_opts = '';
+        my $im_opts = '';
         my $plot_id = '';
         if (ref($cmd))
         {
-            ($cmd, $plot_opts) = @$cmd;
-            $plot_id = md5_hex($plot_opts);
+            ($cmd, $plot_opts, $im_opts) = @$cmd;
+            $im_opts = '' if !defined($im_opts);
+            $plot_id = md5_hex($plot_opts.$im_opts);
             $plot_opts =~ s/\n/\\\n/g;
+            $im_opts =~ s/\n/\\\n/g;
         }
 
         my $id = generate_id($cmd);
         my $prefix = "$opt_prefix$id-";
         my $fn_data = "${prefix}FUNCTION.dat";
         my $fn_contour = "${prefix}CONTOUR.dat";
-        my $fn_plot = "${prefix}${plot_id}PLOT.gnuplot";
-        my $fn_frame = "${prefix}${plot_id}plot.png";
+        my $fn_script = "${prefix}${plot_id}PLOT.gnuplot";
+        my $fn_plot = "${prefix}${plot_id}plot.png";
+        my $fn_frame = "${prefix}${plot_id}frame.png";
+
+        $fn_plot = $fn_frame if $im_opts eq '';
 
         add_make_rule([$fn_data, $fn_contour], ['calculate'],
                       "./calculate --prefix '$prefix' $cmd");
-        add_make_rule([$fn_plot], ['gen_plot_script.pl'],
-                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_frame' --terminal 'pngcairo size 1000,600' $plot_opts $cmd > '$fn_plot'");
-        add_make_rule([$fn_frame], [$fn_data, $fn_contour, $fn_plot],
-                      "gnuplot '$fn_plot'");
+        add_make_rule([$fn_script], ['gen_plot_script.pl'],
+                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_plot' --terminal 'pngcairo size 1000,600' $plot_opts $cmd > '$fn_script'");
+        add_make_rule([$fn_plot], [$fn_data, $fn_contour, $fn_script],
+                      "gnuplot '$fn_script'");
+        if ($im_opts ne '')
+        {
+            add_make_rule([$fn_frame], [$fn_plot], "convert '$fn_plot' $im_opts '$fn_frame'");
+        }
         add_frame($fn_frame) for 1..$opt_frame_div;
     }
 }
