@@ -145,6 +145,7 @@ sub emit_plot_commands_function
             $opt_filename_data, $opt_filename_data, $opt_filename_data;
 
     print $file "\n\n";
+    print $file "unset arrow\n";
     print $file "unset label\n";
     print $file "unset xlabel\n";
     print $file "unset object 1\n";
@@ -180,6 +181,7 @@ sub emit_plot_commands
         $opt_filename_data, $opt_filename_data, $opt_filename_data;
 
     print $file "\n\n";
+    print $file "unset arrow\n";
     print $file "unset label\n";
     print $file "unset xlabel\n";
     print $file "\n\n";
