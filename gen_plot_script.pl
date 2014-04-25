@@ -167,6 +167,7 @@ sub emit_plot_commands
     ."set xrange [0:10]\n"
     ."set yrange [-15:15]\n"
     ."set style fill solid 0.4\n"
+    ."set xlabel \"r\"\n"
     ."\n";
 
     print $file "$_\n" for (@opt_pre_plot);
