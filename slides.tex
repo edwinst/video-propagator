@@ -1,16 +1,31 @@
 \documentclass{beamer}
 
+\usetheme{Berlin}
+
 \newcommand{\envelope}{\frac{p}{\sqrt{p^2 + m^2}}}
 \newcommand{\integrand}{\frac{p e^{ipr}}{\sqrt{p^2 + m^2}}}
 \newcommand{\CC}{\mathbb{C}}
 
+\title{Contour integral of free field propagator}
+\author{Edwin Steiner}
+\date{\today}
+
+
 \begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
 \begin{frame}
 2-point function of a free scalar field, for purely spatial separations $r > 0$:
 
 $$\int_{-\infty}^{\infty} dp \integrand.$$
 
-Problem: This integral does not converge! (Neither in Lebesgue's
+\pause
+Problem: \alert{This integral does not converge!} (Neither in Lebesgue's
 nor Riemann's sense.)
 \end{frame}
 
@@ -26,12 +41,14 @@ as a complex function of $p \in \CC$.
 
 
 \begin{frame}
-Actually, let's first look at
+Actually, let's first look at:
 
 $$\envelope$$
 
+\pause
 No surprises on the real line:
 
+\pause
 $$\envelope \ \rightarrow \ 1 \ \textrm{ for } p \rightarrow +\infty,$$
 
 $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
@@ -55,12 +72,18 @@ It gets more interesting for complex $p$:
 
 $$\envelope$$
 
-For $|p| \rightarrow \infty$ this goes to  a pure phase.
+\begin{itemize}
 
-But there are branch point singularities at $p = im$ and $p = -im$.
+\pause
+\item For $|p| \rightarrow \infty$ this goes to  a pure phase.
 
-With the branch cut of the square root on the negative real axis,
-the branch  cut of the integrand lies along the imaginary axis towards $+i\infty$ and $-i\infty$.
+\pause
+\item There are branch point \alert{singularities} at $p = im$ and $p = -im$.
+
+\pause
+\item The \alert{branch cut} lies along the imaginary axis towards $+i\infty$ and $-i\infty$.
+(Due to the branch cut of the square root on the negative real axis.)
+\end{itemize}
 \end{frame}
 
 % animate envelope on the real line, rotate to imaginary axis
@@ -84,9 +107,11 @@ $$\integrand$$
 which is
 
 \begin{itemize}
-\item \emph{oscillating} along the real axis,
+\pause
+\item \alert{oscillating} along the real axis,
 
-\item \emph{exponentially damped} in the upper half plane.
+\pause
+\item \alert{exponentially damped} in the upper half plane.
 \end{itemize}
 \end{frame}
 
@@ -132,7 +157,7 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 
 % show integral, vary Lambda, vary m(?)
 
-%: $opts = '--n 25 --z0 0.1 --z1 0.5 --m 1';
+%: $opts = '--n 250 --z0 0.1 --z1 5 --m 1';
 %: animate(3, sub { $opts.' --Pr 45 --Pi 0 --d 0' });
 
 %: animate(20, sub {

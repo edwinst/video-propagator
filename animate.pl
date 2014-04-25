@@ -171,7 +171,7 @@ while (<>)
             $code = '';
         }
 
-        if (/^\s*\\begin{frame}/)
+        if (/^\s*\\begin{frame}/ || /^\s*\\pause\b/)
         {
             $page_counter++;
             my $fn_frame = sprintf("slides-png/slide-%04d.png", $page_counter);
