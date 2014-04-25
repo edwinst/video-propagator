@@ -118,6 +118,7 @@ sub emit_plot_commands_function
     ."\n"
     ."set xrange [0:1]\n"
     ."set yrange [-3:3]\n"
+    ."set xlabel \"p\"\n"
     ."set style fill solid 0.4\n"
     ."\n";
 
@@ -145,6 +146,7 @@ sub emit_plot_commands_function
 
     print $file "\n\n";
     print $file "unset label\n";
+    print $file "unset xlabel\n";
     print $file "unset object 1\n";
 
     emit_plot_contour_inset($file, 0.6, 0.1, 0.3, 0.3, -10.5,+10.5, -1, 4, 1);
@@ -179,6 +181,7 @@ sub emit_plot_commands
 
     print $file "\n\n";
     print $file "unset label\n";
+    print $file "unset xlabel\n";
     print $file "\n\n";
 
     emit_plot_contour_inset($file, 0.2, 0.1, 0.3, 0.3, -90,+90, -10,+90, 0);

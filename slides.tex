@@ -67,8 +67,8 @@ the branch  cut of the integrand lies along the imaginary axis towards $+i\infty
 
 % animate to show the branch cut
 
-%: animate(24, sub {
-%:     my $t = t_ab(5, 0.1, 0.1, 0.1, $_[0]);
+%: animate(20, sub {
+%:     my $t = t_ab(4, 0.1, 0.1, 0.1, $_[0]);
 %:     $t = sin($t*pi/2)**2;
 %:     my $y = 2*$t;
 %:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
@@ -94,7 +94,7 @@ which is
 
 %: animate(3, sub { '--integrand --z0 -10 --z1 10 --m 1 --r 2' });
 
-%: animate(10, sub {
+%: animate(12, sub {
 %:     my $r = t_xaby(5, 0.1, 0.1, 0.1, 2, 0.5, 10, 2,$_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %.3g', $r),
 %:      sprintf(qq{
@@ -102,17 +102,17 @@ which is
 %:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r)]
 %: });
 
-%: animate(24, sub {
-%:     my $t = t_ab(5, 0.1, 0.1, 0.1, $_[0]);
+%: animate(10, sub {
+%:     my $t = t_ab(2, 0.1, 0.1, 0.1, $_[0]);
 %:     $t = sin($t*pi/2)**2;
 %:     my $y = 2*$t;
 %:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
-%:     [sprintf('--integrand --z0 -10,%g --z1 10,%g --m 1', $y, $y),
+%:     [sprintf('--integrand --z0 -10,%.3g --z1 10,%.3g --m 1', $y, $y),
 %:      "--pre-plot '$preplot'"]
 %: });
 
-%: animate(24, sub {
-%:     my $t = t_ab(2, 0.1, 0.1, 0.1, $_[0]);
+%: animate(16, sub {
+%:     my $t = t_ab(2, 0.1, 0.2, 0.1, $_[0]);
 %:     $t = sin($t*pi/2)**2;
 %:     my @z0 = interpol_complex(-10,0, 0.01,0, $t);
 %:     my @z1 = interpol_complex(+10,0, 0.01,2, $t);
@@ -132,14 +132,14 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 
 % show integral, vary Lambda, vary m(?)
 
-%: $opts = '--n 250 --z0 0.1 --z1 5 --m 1';
+%: $opts = '--n 25 --z0 0.1 --z1 0.5 --m 1';
 %: animate(3, sub { $opts.' --Pr 45 --Pi 0 --d 0' });
 
 %: animate(20, sub {
 %:     my $Pr = t_xaby(5, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
 %:     [sprintf($opts.' --Pr %.3g --Pi 0 --d 0', $Pr),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying cutoff..." at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
 %:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr)]
 %: });
 
@@ -163,6 +163,35 @@ Witness the miracle of Cauchy's theorem!
 %:     [sprintf($opts.' --Pr 45 --Pi %.3g --d 0', $t),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "pushing the contour..." at 5,8 font "serif,20"'})]
+%: });
+
+%: animate(10, sub {
+%:     my $Pr = t_xaby(3, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
+%:     [sprintf($opts.' --Pr %.3g --Pi 45 --d 0', $Pr),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr)]
+%: });
+
+%: animate(10, sub {
+%:     my $t = t_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
+%: });
+
+%: animate(5, sub {
+%:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 2.0, $_[0]);
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
+%: });
+
+%: animate(15, sub {
+%:     my $t = t_xaby(4, 0.1, 0.1, 0.1, 2.0, 3.0, 2.8, 2.0, $_[0]);
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
 %: });
 
 
