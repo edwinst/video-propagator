@@ -6,13 +6,13 @@ all: calculate
 clean:
 	rm -rf slides-png links tmp calculate \
             slides.{pdf,aux,toc,log,nav,out,snm} Makefile.generated \
-            label-integral{,-crop}.{pdf,aux,toc,log,nav,out,snm,png} \
+            label-{integral,integrand,envelope}{,-crop}.{pdf,aux,toc,log,nav,out,snm,png} \
             test.avi
 
 calculate: calculate.c
 	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas -lm
 
-video: calculate animate.pl slides-png label-integral.png
+video: calculate animate.pl slides-png label-integral.png label-envelope.png label-integrand.png
 	rm -rf links Makefile.generated
 	mkdir -p links tmp
 	./animate.pl <slides.tex
@@ -29,6 +29,24 @@ slides-png: slides.pdf
 	rm -rf slides-png
 	mkdir -p slides-png
 	gs -sDEVICE=pngalpha -sOutputFile=slides-png/slide-%04d.png -r144 -dBATCH -dNOPAUSE slides.pdf
+
+label-envelope.pdf: label-envelope.tex
+	pdflatex $<
+
+label-envelope-crop.pdf: label-envelope.pdf
+	pdfcrop $<
+
+label-envelope.png: label-envelope-crop.pdf
+	convert -density 160 $< $@
+
+label-integrand.pdf: label-integrand.tex
+	pdflatex $<
+
+label-integrand-crop.pdf: label-integrand.pdf
+	pdfcrop $<
+
+label-integrand.png: label-integrand-crop.pdf
+	convert -density 160 $< $@
 
 label-integral.pdf: label-integral.tex
 	pdflatex $<

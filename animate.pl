@@ -19,6 +19,10 @@ my $page_counter = 0;
 
 my $opts; # XXX HACK
 
+my $im_env = 'label-envelope.png -geometry +120+80 -composite';
+my $im_igd = 'label-integrand.png -geometry +120+80 -composite';
+my $im_int = 'label-integral.png -geometry +120+80 -composite';
+
 open(my $makefile, '>', 'Makefile.generated') or die;
 
 sub generate_id

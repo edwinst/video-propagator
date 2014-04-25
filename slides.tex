@@ -56,14 +56,15 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 \end{frame}
 
 % animate envelope on the real line, varying m
-%: animate(3, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 1 });
+%: animate(3, sub { ['--envelope --z0 -10 --z1 10 --m 1', '', $im_env] });
 
 %: animate(10, sub {
 %:     my $m = t_xaby(5, 0.1, 0.1, 0.1, 1, 0.2, 3, 1, $_[0]);
 %:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,20"'
-%:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,20"'}, $m)]
+%:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,20"'}, $m),
+%:      $im_env]
 %: });
 
 
@@ -96,7 +97,7 @@ $$\envelope$$
 %:     my $y = 2*$t;
 %:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
 %:     [sprintf('--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y),
-%:      "--pre-plot '$preplot'"]
+%:      "--pre-plot '$preplot'", $im_env]
 %: });
 
 \begin{frame}
@@ -117,14 +118,15 @@ which is
 
 % animate integrand on the real line, rotating to vertical segments to show damping
 
-%: animate(3, sub { '--integrand --z0 -10 --z1 10 --m 1 --r 2' });
+%: animate(3, sub { ['--integrand --z0 -10 --z1 10 --m 1 --r 2', '', $im_igd] });
 
 %: animate(12, sub {
 %:     my $r = t_xaby(5, 0.1, 0.1, 0.1, 2, 0.5, 10, 2,$_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %.3g', $r),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying r..." at 0.25,2 font "serif,20"'
-%:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r)]
+%:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r),
+%:      $im_igd]
 %: });
 
 %: animate(10, sub {
@@ -133,7 +135,7 @@ which is
 %:     my $y = 2*$t;
 %:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
 %:     [sprintf('--integrand --z0 -10,%.3g --z1 10,%.3g --m 1', $y, $y),
-%:      "--pre-plot '$preplot'"]
+%:      "--pre-plot '$preplot'", $im_igd]
 %: });
 
 %: animate(16, sub {
@@ -143,7 +145,7 @@ which is
 %:     my @z1 = interpol_complex(+10,0, 0.01,2, $t);
 %:     my $preplot = '';
 %:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
-%:      "--pre-plot '$preplot'"]
+%:      "--pre-plot '$preplot'", $im_igd]
 %: });
 
 
@@ -159,7 +161,7 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 
 %: $opts = '--n 250 --z0 0.1 --z1 5 --m 1';
 %: animate(3, sub {
-%:     [$opts.' --Pr 45 --Pi 0 --d 0', '', 'label-integral.png -geometry +120+80 -composite']
+%:     [$opts.' --Pr 45 --Pi 0 --d 0', '', $im_int]
 %: });
 
 %: animate(20, sub {
@@ -167,7 +169,8 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 %:     [sprintf($opts.' --Pr %.3g --Pi 0 --d 0', $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr)]
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:      $im_int]
 %: });
 
 
@@ -193,7 +196,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 
 % animate the M contour
 
-%: animate(3, sub { $opts.' --Pr 45 --Pi 0 --d 0' });
+%: animate(3, sub { [$opts.' --Pr 45 --Pi 0 --d 0', '', $im_int] });
 
 %: animate(10, sub {
 %:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 0, 45, 0, 45, $_[0]);
@@ -203,7 +206,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:         $preplot .= q{ --pre-plot 'set label "no change" at 2,7'};
 %:     }
 %:     [sprintf($opts.' --Pr 45 --Pi %.3g --d 0', $t),
-%:      $preplot]
+%:      $preplot, $im_int]
 %: });
 
 %: animate(10, sub {
@@ -211,28 +214,32 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:     [sprintf($opts.' --Pr %.3g --Pi 45 --d 0', $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr)]
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:      $im_int]
 %: });
 
 %: animate(10, sub {
 %:     my $t = t_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%:      $im_int]
 %: });
 
 %: animate(5, sub {
 %:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 2.0, $_[0]);
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%:      $im_int]
 %: });
 
 %: animate(15, sub {
 %:     my $t = t_xaby(4, 0.1, 0.1, 0.1, 2.0, 3.0, 2.8, 2.0, $_[0]);
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'})]
+%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%:      $im_int]
 %: });
 
 
