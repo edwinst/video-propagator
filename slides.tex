@@ -41,9 +41,8 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 % animate envelope on the real line, varying m
 %: animate(3, sub { sprintf '--envelope --z0 -10 --z1 10 --m %g', 1 });
 
-%: animate(8, sub {
-%:     my $t = t_ab(3, 0.1, 0.1, 0.1, $_[0]);
-%:     my $m = 1 + 2*$t;
+%: animate(10, sub {
+%:     my $m = t_xaby(5, 0.1, 0.1, 0.1, 1, 0.2, 3, 1, $_[0]);
 %:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,20"'
@@ -95,10 +94,9 @@ which is
 
 %: animate(3, sub { '--integrand --z0 -10 --z1 10 --m 1 --r 2' });
 
-%: animate(8, sub {
-%:     my $t = t_ab(3, 0.1, 0.1, 0.1, $_[0]);
-%:     my $r = 1 + 10*$t;
-%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %g', $r),
+%: animate(10, sub {
+%:     my $r = t_xaby(5, 0.1, 0.1, 0.1, 2, 0.5, 10, 2,$_[0]);
+%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %.3g', $r),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying r..." at 0.25,2 font "serif,20"'
 %:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r)]

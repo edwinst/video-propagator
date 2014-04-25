@@ -69,6 +69,37 @@ sub t_ab
 }
 
 
+sub t_xaby
+{
+    my ($n, $beg, $mid, $end, $x, $a, $b, $y, $t) = @_;
+    return $x if $t <= $beg;
+
+    my $func = sub { sin(pi/2*$_[0])**2 };
+
+    $t -= $beg;
+    my $delta = (1 - $beg - $end - ($n - 1) * $mid) / $n;
+    my $from = $x;
+    my $dest = 0;
+    for my $i (1..$n)
+    {
+        my $to = ($i < $n) ? ($dest ? $b : $a) : $y;
+        if ($t < $delta)
+        {
+            return interpol_real($from, $to, $func->($t/$delta));
+        }
+        $t -= $delta;
+
+        return $to if $t < $mid;
+        $t -= $mid;
+
+        $dest = !$dest;
+        $from = $to;
+    }
+
+    return $y;
+}
+
+
 sub interpol_real
 {
     my ($from, $to, $t) = @_;
