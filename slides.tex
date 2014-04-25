@@ -195,9 +195,13 @@ Witness the miracle of \alert{Cauchy's theorem}!
 
 %: animate(10, sub {
 %:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 0, 45, 0, 45, $_[0]);
+%:     my $preplot = q{--pre-plot 'set label "pushing the contour..." at 5,8 font "serif,20"'};
+%:     if ($_[0] > 0.1) {
+%:         $preplot .= q{ --pre-plot 'set arrow from 1.9,6.8 to 1,5 head'};
+%:         $preplot .= q{ --pre-plot 'set label "no change" at 2,7'};
+%:     }
 %:     [sprintf($opts.' --Pr 45 --Pi %.3g --d 0', $t),
-%:      sprintf(qq{
-%:          --pre-plot 'set label "pushing the contour..." at 5,8 font "serif,20"'})]
+%:      $preplot]
 %: });
 
 %: animate(10, sub {
