@@ -10,6 +10,7 @@ my $opt_t;
 my $opt_n;
 my $opt_d;
 my $opt_Pr;
+my $opt_Pi;
 my $opt_terminal;
 my $opt_filename_output;
 my $opt_filename_contour = "";
@@ -41,6 +42,7 @@ my $result = GetOptions(
         "t=s" => \$opt_t,
         "d=s" => \$opt_d,
         "Pr=s" => \$opt_Pr,
+        "Pi=s" => \$opt_Pi,
         "terminal=s" => \$opt_terminal,
         "envelope" => \$opt_envelope,
         "integrand" => \$opt_integrand,

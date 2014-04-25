@@ -283,7 +283,6 @@ double pos(double x)
 
 
 void define_contour_M(const Params *params,
-                      double t,
                       double d,
                       Contour *contour)
 {
@@ -293,12 +292,12 @@ void define_contour_M(const Params *params,
     double Pi = params->Pi;
     double peps = params->peps;
 
-    if (t <= params->m - peps)
+    if (Pi <= params->m - peps)
     {
         contour->npoints = 4;
         contour->points[0] = gsl_complex_rect(-Pr, d);
-        contour->points[1] = gsl_complex_rect(-Pr, t);
-        contour->points[2] = gsl_complex_rect(+Pr, t);
+        contour->points[1] = gsl_complex_rect(-Pr, Pi);
+        contour->points[2] = gsl_complex_rect(+Pr, Pi);
         contour->points[3] = gsl_complex_rect(+Pr, d);
     }
     else
@@ -435,6 +434,7 @@ int main(int argc, char **argv)
       { "z0",        1, NULL, '0' },
       { "z1",        1, NULL, '1' },
       { "Pr",        1, NULL, 'P' },
+      { "Pi",        1, NULL, 'I' },
       { NULL,        0, NULL, 0   } /* end */
     };
 
@@ -489,6 +489,10 @@ int main(int argc, char **argv)
                 parse_double(optarg, &params.Pr);
                 break;
 
+            case 'I':
+                parse_double(optarg, &params.Pi);
+                break;
+
             case 0:  break; // flag handled
             case -1: break; // end of options
 
@@ -521,7 +525,7 @@ int main(int argc, char **argv)
     else
     {
         Contour contour;
-        define_contour_M(&params, params.t, params.d, &contour);
+        define_contour_M(&params, params.d, &contour);
 
         FILE *os = fopen(ctx.filename_data, "w");
         tabulate_integral(
