@@ -5,6 +5,7 @@ use Getopt::Long;
 use Data::Dumper;
 
 my $opt_m = 1;
+my $opt_r = 2;
 my $opt_terminal;
 my $opt_filename_output;
 my $opt_filename_contour = "";
@@ -31,6 +32,7 @@ sub parse_complex
 
 my $result = GetOptions(
         "m=s" => \$opt_m,
+        "r=s" => \$opt_r,
         "terminal=s" => \$opt_terminal,
         "envelope" => \$opt_envelope,
         "integrand" => \$opt_integrand,

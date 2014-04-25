@@ -46,7 +46,7 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 %:     my $m = 1 + 2*$t;
 %:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying the mass" at 0.25,2 font "serif,20"'
+%:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,20"'
 %:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,20"'}, $m)]
 %: });
 
@@ -69,9 +69,12 @@ the branch  cut of the integrand lies along the imaginary axis towards $+i\infty
 % animate to show the branch cut
 
 %: animate(24, sub {
-%:     my $w = sin($_[0] * pi * 3);
-%:     my $y = 2*$w*$w;
-%:     sprintf '--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y
+%:     my $t = t_ab(5, 0.1, 0.1, 0.1, $_[0]);
+%:     $t = sin($t*pi/2)**2;
+%:     my $y = 2*$t;
+%:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
+%:     [sprintf('--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y),
+%:      "--pre-plot '$preplot'"]
 %: });
 
 \begin{frame}
@@ -89,6 +92,26 @@ which is
 \end{frame}
 
 % animate integrand on the real line, rotating to vertical segments to show damping
+
+%: animate(3, sub { '--integrand --z0 -10 --z1 10 --m 1 --r 2' });
+
+%: animate(8, sub {
+%:     my $t = t_ab(3, 0.1, 0.1, 0.1, $_[0]);
+%:     my $r = 1 + 10*$t;
+%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %g', $r),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "varying r..." at 0.25,2 font "serif,20"'
+%:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r)]
+%: });
+
+%: animate(24, sub {
+%:     my $t = t_ab(5, 0.1, 0.1, 0.1, $_[0]);
+%:     $t = sin($t*pi/2)**2;
+%:     my $y = 2*$t;
+%:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
+%:     [sprintf('--integrand --z0 -10,%g --z1 10,%g --m 1', $y, $y),
+%:      "--pre-plot '$preplot'"]
+%: });
 
 
 \begin{frame}
