@@ -113,6 +113,16 @@ which is
 %:      "--pre-plot '$preplot'"]
 %: });
 
+%: animate(24, sub {
+%:     my $t = t_ab(2, 0.1, 0.1, 0.1, $_[0]);
+%:     $t = sin($t*pi/2)**2;
+%:     my @z0 = interpol_complex(-10,0, 0.01,0, $t);
+%:     my @z1 = interpol_complex(+10,0, 0.01,2, $t);
+%:     my $preplot = '';
+%:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
+%:      "--pre-plot '$preplot'"]
+%: });
+
 
 \begin{frame}
 Let's try a sharp cutoff at $p = \pm \Lambda$:

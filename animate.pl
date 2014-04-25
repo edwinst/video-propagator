@@ -69,6 +69,20 @@ sub t_ab
 }
 
 
+sub interpol_real
+{
+    my ($from, $to, $t) = @_;
+    $from + $t * ($to - $from);
+}
+
+
+sub interpol_complex
+{
+    my ($z0_re, $z0_im, $z1_re, $z1_im, $t) = @_;
+    (interpol_real($z0_re, $z1_re, $t), interpol_real($z0_im, $z1_im, $t));
+}
+
+
 sub animate
 {
     my ($secs, $code) = @_;
