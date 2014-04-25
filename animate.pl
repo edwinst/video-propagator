@@ -17,6 +17,8 @@ my $frame_counter = 0;
 my @frame_links;
 my $page_counter = 0;
 
+my $opts; # XXX HACK
+
 open(my $makefile, '>', 'Makefile.generated') or die;
 
 sub generate_id

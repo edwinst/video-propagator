@@ -132,6 +132,17 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 
 % show integral, vary Lambda, vary m(?)
 
+%: $opts = '--n 250 --z0 0.1 --z1 5 --m 1';
+%: animate(3, sub { $opts.' --Pr 45 --t 0 --d 0' });
+
+%: animate(20, sub {
+%:     my $Pr = t_xaby(5, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
+%:     [sprintf($opts.' --Pr %.3g --t 0 --d 0', $Pr),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "varying cutoff..." at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr)]
+%: });
+
 
 \begin{frame}
 There's a strong oscillation at the cutoff (spatial) frequency $\Lambda$

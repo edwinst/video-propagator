@@ -6,6 +6,10 @@ use Data::Dumper;
 
 my $opt_m = 1;
 my $opt_r = 2;
+my $opt_t;
+my $opt_n;
+my $opt_d;
+my $opt_Pr;
 my $opt_terminal;
 my $opt_filename_output;
 my $opt_filename_contour = "";
@@ -33,6 +37,10 @@ sub parse_complex
 my $result = GetOptions(
         "m=s" => \$opt_m,
         "r=s" => \$opt_r,
+        "n=s" => \$opt_n,
+        "t=s" => \$opt_t,
+        "d=s" => \$opt_d,
+        "Pr=s" => \$opt_Pr,
         "terminal=s" => \$opt_terminal,
         "envelope" => \$opt_envelope,
         "integrand" => \$opt_integrand,
