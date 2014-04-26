@@ -9,6 +9,7 @@
 \title{Contour integral of free field propagator}
 \author{Edwin Steiner}
 \date{\today}
+% XXX add git hash
 
 
 \begin{document}
@@ -22,11 +23,15 @@
 \begin{frame}
 2-point function of a free scalar field, for purely spatial separations $r > 0$:
 
+% XXX define r (vector)
+% XXX m > 0
+
 $$\int_{-\infty}^{\infty} dp \integrand.$$
 
 \pause
 Problem: \alert{This integral does not converge!} (Neither in Lebesgue's
 nor Riemann's sense.)
+% XXX the oscillations do not decay at high momenta
 \end{frame}
 
 
@@ -173,13 +178,14 @@ which is
 %:      '', $im_igd]
 %: });
 
+% XXX introduce numerical integration
 
 \begin{frame}
 Let's try a sharp cutoff at $p = \pm \Lambda$:
 
 $$\int_{-\Lambda}^{+\Lambda} dp \integrand$$
 
-It looks like this as a function of $r$ (varying $\Lambda$):
+It looks like this as a function of $r$:
 \end{frame}
 
 % show integral, vary Lambda, vary m(?)
@@ -200,14 +206,14 @@ It looks like this as a function of $r$ (varying $\Lambda$):
 
 
 \begin{frame}
-We see:
+We see a function with:
 
 \begin{itemize}
 \pause
-\item Strong \alert{oscillation} at the cutoff (spatial) frequency
+\item strong \alert{oscillations} at the cutoff momentum,
 
 \pause
-\item superposed onto a function falling \alert{exponentially} with $r$.
+\item \alert{average value} falling \alert{exponentially} with $r$.
 \end{itemize}
 
 \pause
@@ -243,6 +249,17 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:      $im_int]
 %: });
 
+% XXX observations about parts of the contour
+% Parts pushed high into the upper half plane become negligible.
+% XXX justification of contour change (distributional character of the fields)
+% Intuitively it is clear that the oscillations are an artifact
+% of the sharp cutoff.
+%
+% The field operators are actually distributions which need to be smeared
+% by test functions. Any smooth test function will effectively suppress 
+% momenta above a certain scale $\Lambda$. We can always push the contour beyond $\Lambda$
+% to make the "vertical" parts of the contour negligible. 
+
 %: animate(10, sub {
 %:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
@@ -250,6 +267,11 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
 %:      $im_int]
 %: });
+
+% The non-oscillatory part of the integral is dominated by contributions
+% from the U-shaped part of the contour close to the singularity.
+% For r >> 1/m we can find an analytical approximation:
+% XXX approximation for r >> 1/m
 
 %: seq_name('approx');
 %: animate(10, sub {
@@ -278,9 +300,6 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %%: });
 
 
-% XXX smoothing
-
-
 \begin{frame}
 \frametitle{Software Credits}
 
@@ -290,4 +309,11 @@ Plotting: gnuplot
 
 Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 \end{frame}
+
+
+% XXX link to github code
+
+% XXX details of integral equations
+% XXX details of analytic approximation
+
 \end{document}
