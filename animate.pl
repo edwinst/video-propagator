@@ -29,12 +29,14 @@ my $im_int = 'label-integral.png -geometry +120+60 -composite';
 
 open(my $makefile, '>', 'Makefile.generated') or die;
 
+
 sub generate_id
 {
     my ($cmd) = @_;
     $cmd =~ tr/\.\/ \t\n/_/;
     $cmd;
 }
+
 
 sub add_make_rule
 {
@@ -49,6 +51,7 @@ sub add_make_rule
     print $makefile "\n";
 }
 
+
 sub add_frame
 {
     my ($path) = @_;
@@ -57,31 +60,7 @@ sub add_frame
 }
 
 
-sub t_ab
-{
-    my ($n, $beg, $mid, $end, $t) = @_;
-    return 0 if $t <= $beg;
-
-    $t -= $beg;
-    my $delta = (1 - $beg - $end - ($n - 1) * $mid) / $n;
-    my $direction = 1;
-    for my $i (1..$n)
-    {
-        if ($t < $delta)
-        {
-            return 0.5 * (1 - $direction) + $direction * $t / $delta;
-        }
-        $t -= $delta;
-        $direction = -$direction;
-        return 0.5 * (1 - $direction) if $t < $mid;
-        $t -= $mid;
-    }
-
-    return 0.5 * (1 - $direction);
-}
-
-
-sub t_xaby
+sub interpol_xaby
 {
     my ($n, $beg, $mid, $end, $x, $a, $b, $y, $t) = @_;
     return $x if $t <= $beg;
@@ -190,6 +169,7 @@ sub animate
 
     undef $sequence_name;
 }
+
 
 my @animations;
 my $code = '';
