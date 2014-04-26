@@ -142,20 +142,35 @@ which is
 %: });
 
 %: animate(10, sub {
-%:     my $y = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 0, 2, 2, $_[0]);
+%:     my $y = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 2, 2, 0, $_[0]);
 %:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
 %:     [sprintf('--integrand --z0 -10,%.3g --z1 10,%.3g --m 1', $y, $y),
 %:      "--pre-plot '$preplot'", $im_igd]
 %: });
 
-%: seq_name('rotate');
-%: animate(16, sub {
-%:     my $t = interpol_xaby(2, 0.1, 0.2, 0.1, 0, 0, 1, 1, $_[0]);
+%: seq_name('rotate-1');
+%: animate(8, sub {
+%:     my $t = interpol_xaby(1, 0.1, 0.2, 0.2, 0, 0, 1, 1, $_[0]);
 %:     my @z0 = interpol_complex(-10,0, 0.01,0, $t);
 %:     my @z1 = interpol_complex(+10,0, 0.01,2, $t);
-%:     my $preplot = '';
 %:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
-%:      "--pre-plot '$preplot'", $im_igd]
+%:      '', $im_igd]
+%: });
+%: seq_name('rotate-2');
+%: animate(16, sub {
+%:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 1, 1, 0, $_[0]);
+%:     my @z0 = interpol_complex(0.01,0, 8,0, $t);
+%:     my @z1 = interpol_complex(0.01,2, 8,2, $t);
+%:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
+%:      '', $im_igd]
+%: });
+%: seq_name('rotate-3');
+%: animate(8, sub {
+%:     my $t = interpol_xaby(1, 0.1, 0.2, 0.2, 1, 1, 0, 0, $_[0]);
+%:     my @z0 = interpol_complex(-10,0, 0.01,0, $t);
+%:     my @z1 = interpol_complex(+10,0, 0.01,2, $t);
+%:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
+%:      '', $im_igd]
 %: });
 
 
