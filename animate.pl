@@ -21,8 +21,8 @@ my $sequence_name;
 
 my $opts; # XXX HACK
 
-my $im_env = 'label-envelope.png -geometry +120+80 -composite';
-my $im_igd = 'label-integrand.png -geometry +120+80 -composite';
+my $im_env = 'label-envelope.png -geometry +100+60 -composite';
+my $im_igd = 'label-integrand.png -geometry +100+60 -composite';
 my $im_int = 'label-integral.png -geometry +120+80 -composite';
 
 open(my $makefile, '>', 'Makefile.generated') or die;
@@ -134,6 +134,7 @@ sub animate
     my ($secs, $code) = @_;
 
     my @frames;
+    my %frames_seen;
     my $nframes = $secs * $opt_frame_rate / $opt_frame_div;
     for my $i (0 .. ($nframes-1))
     {
@@ -173,12 +174,14 @@ sub animate
             add_make_rule([$fn_frame], [$fn_plot], "convert '$fn_plot' $im_opts '$fn_frame'");
         }
         add_frame($fn_frame) for 1..$opt_frame_div;
-        push @frames, $fn_frame;
+        push @frames, $fn_frame unless $frames_seen{$fn_frame}++;
     }
 
     if (defined($sequence_name))
     {
         add_make_rule(["seq-$sequence_name"], \@frames);
+        add_make_rule(["display-seq-$sequence_name"], ["seq-$sequence_name"],
+                      "display ".join(' ', @frames));
     }
 
     undef $sequence_name;
