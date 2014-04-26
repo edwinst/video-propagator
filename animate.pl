@@ -17,6 +17,8 @@ my $frame_counter = 0;
 my @frame_links;
 my $page_counter = 0;
 
+my $sequence_name;
+
 my $opts; # XXX HACK
 
 my $im_env = 'label-envelope.png -geometry +120+80 -composite';
@@ -120,10 +122,18 @@ sub interpol_complex
 }
 
 
+sub seq_name
+{
+    my ($name) = @_;
+    $sequence_name = $name;
+}
+
+
 sub animate
 {
     my ($secs, $code) = @_;
 
+    my @frames;
     my $nframes = $secs * $opt_frame_rate / $opt_frame_div;
     for my $i (0 .. ($nframes-1))
     {
@@ -163,7 +173,15 @@ sub animate
             add_make_rule([$fn_frame], [$fn_plot], "convert '$fn_plot' $im_opts '$fn_frame'");
         }
         add_frame($fn_frame) for 1..$opt_frame_div;
+        push @frames, $fn_frame;
     }
+
+    if (defined($sequence_name))
+    {
+        add_make_rule(["seq-$sequence_name"], \@frames);
+    }
+
+    undef $sequence_name;
 }
 
 my @animations;
@@ -179,7 +197,6 @@ while (<>)
     {
         if ($code ne '')
         {
-            print "CODE: >>>$code<<<\n";
             eval($code);
             die $@ if $@;
             $code = '';
