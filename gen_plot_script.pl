@@ -19,7 +19,9 @@ my $opt_envelope = 0;
 my $opt_integrand = 0;
 my $opt_z0 = '0,0';
 my $opt_z1 = '0,0';
+my $opt_yrange;
 my @opt_pre_plot;
+my @opt_append_plot;
 
 sub parse_complex
 {
@@ -52,6 +54,8 @@ my $result = GetOptions(
         "data-file=s" => \$opt_filename_data,
         "contour-file=s" => \$opt_filename_contour,
         "pre-plot=s" => \@opt_pre_plot,
+        "append-plot=s" => \@opt_append_plot,
+        "yrange=s" => \$opt_yrange,
 );
 parse_complex(\$opt_z0);
 parse_complex(\$opt_z1);
@@ -99,13 +103,16 @@ sub emit_plot_contour_inset
     }
 
     printf $file
-    "\"%s\" using 1:2 with lines lw 2 lc rgb 'blue' notitle\n\n", $opt_filename_contour;
+    "\"%s\" using 1:2 with lines lw 2 lt 1 lc rgb 'blue' notitle\n\n", $opt_filename_contour;
 }
 
 
 sub emit_plot_commands_function
 {
     my ($file) = @_;
+
+    my $yrange = $opt_yrange;
+    $yrange = '-3:3' if !defined($yrange);
 
     print $file 
      "set size 1,1\n"
@@ -117,7 +124,7 @@ sub emit_plot_commands_function
     ."set rmargin 6\n"
     ."\n"
     ."set xrange [0:1]\n"
-    ."set yrange [-3:3]\n"
+    ."set yrange [$yrange]\n"
     ."set xlabel \"p\"\n"
     ."set style fill solid 0.4\n"
     ."\n";
@@ -139,9 +146,9 @@ sub emit_plot_commands_function
 
     print $file "\nplot ";
 
-    printf $file "\"%s\" using 1:7:6 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
-               ."\"%s\" using 1:4 with lines lc 1 title \"real\", \\\n     "
-               ."\"%s\" using 1:5 with lines lc 3 title \"imag\"",
+    printf $file "\"%s\" using 1:7:6 with filledcurve lt 1 lc rgb \"orange\" title \"abs\", \\\n     "
+               ."\"%s\" using 1:4 with lines lt 1 lc 1 title \"real\", \\\n     "
+               ."\"%s\" using 1:5 with lines lt 1 lc 3 title \"imag\"",
             $opt_filename_data, $opt_filename_data, $opt_filename_data;
 
     print $file "\n\n";
@@ -160,25 +167,30 @@ sub emit_plot_commands
 {
     my ($file) = @_;
 
+    my $yrange = $opt_yrange;
+    $yrange = '-15:15' if !defined($yrange);
+
     print $file 
      "set size 1,1\n"
     ."set multiplot\n"
     ."\n"
     ."set origin 0,0\n"
+    ."set lmargin 6\n"
     ."set size 1,1\n"
     ."\n"
     ."set xrange [0:10]\n"
-    ."set yrange [-15:15]\n"
+    ."set yrange [$yrange]\n"
     ."set style fill solid 0.4\n"
     ."set xlabel \"r\"\n"
     ."\n";
 
     print $file "$_\n" for (@opt_pre_plot);
 
-    printf $file "plot \"%s\" using 1:5:4 with filledcurve lc rgb \"orange\" title \"abs\", \\\n     "
-               ."\"%s\" using 1:2 with lines lc 1 title \"real\", \\\n     "
-               ."\"%s\" using 1:3 with lines lc 3 title \"imag\"",
-        $opt_filename_data, $opt_filename_data, $opt_filename_data;
+    printf $file "plot ".join(", \\\n     ",
+            "\"$opt_filename_data\" using 1:5:4 with filledcurve lc rgb \"orange\" lt 1 title \"abs\"",
+            "\"$opt_filename_data\" using 1:2 with lines lt 1 lc 1 title \"real\"",
+            "\"$opt_filename_data\" using 1:3 with lines lt 1 lc 3 title \"imag\"",
+            @opt_append_plot);
 
     print $file "\n\n";
     print $file "unset arrow\n";

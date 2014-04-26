@@ -23,7 +23,7 @@ my $opts; # XXX HACK
 
 my $im_env = 'label-envelope.png -geometry +100+60 -composite';
 my $im_igd = 'label-integrand.png -geometry +100+60 -composite';
-my $im_int = 'label-integral.png -geometry +120+80 -composite';
+my $im_int = 'label-integral.png -geometry +120+60 -composite';
 
 open(my $makefile, '>', 'Makefile.generated') or die;
 
@@ -166,7 +166,7 @@ sub animate
         add_make_rule([$fn_data, $fn_contour], ['calculate'],
                       "./calculate --prefix '$prefix' $cmd");
         add_make_rule([$fn_script], ['gen_plot_script.pl'],
-                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_plot' --terminal 'pngcairo size 1000,600' $plot_opts $cmd > '$fn_script'");
+                      "./gen_plot_script.pl --data-file '$fn_data' --contour-file '$fn_contour' --output-file '$fn_plot' --terminal 'pngcairo dashed size 1000,600' $plot_opts $cmd > '$fn_script'");
         add_make_rule([$fn_plot], [$fn_data, $fn_contour, $fn_script],
                       "gnuplot '$fn_script'");
         if ($im_opts ne '')

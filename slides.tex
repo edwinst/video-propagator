@@ -240,21 +240,31 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:      $im_int]
 %: });
 
+%: seq_name('approx');
 %: animate(5, sub {
-%:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 2.0, $_[0]);
-%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
-%:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%:     my $t = t_xaby(1, 0.3, 0.1, 0.1, 15, 0.5, 0.5, 0.5, $_[0]);
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d 1'),
+%:      sprintf(' --yrange %.2g:%.2g', -$t, $t).
+%:      q{ --pre-plot 'm = 1'
+%:         --append-plot 'sqrt(2*m*pi/x)*exp(-m*x) with lines lc rgb "black" lt 3' },
 %:      $im_int]
 %: });
 
-%: animate(15, sub {
-%:     my $t = t_xaby(4, 0.1, 0.1, 0.1, 2.0, 3.0, 2.8, 2.0, $_[0]);
-%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
-%:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
-%:      $im_int]
-%: });
+%%: animate(5, sub {
+%%:     my $t = t_xaby(1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 2.0, $_[0]);
+%%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
+%%:      sprintf(qq{
+%%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%%:      $im_int]
+%%: });
+
+%%: animate(15, sub {
+%%:     my $t = t_xaby(4, 0.1, 0.1, 0.1, 2.0, 3.0, 2.8, 2.0, $_[0]);
+%%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
+%%:      sprintf(qq{
+%%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
+%%:      $im_int]
+%%: });
 
 
 % XXX smoothing
