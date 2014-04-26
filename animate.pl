@@ -17,6 +17,8 @@ my $frame_counter = 0;
 my @frame_links;
 my $page_counter = 0;
 
+my %make_rules_seen;
+
 my $sequence_name;
 
 my $opts; # XXX HACK
@@ -39,6 +41,8 @@ sub add_make_rule
     my ($dsts, $srcs, @commands) = @_;
     my $dst = join(' ', @$dsts);
     my $src = join(' ', @$srcs);
+
+    return if $make_rules_seen{$dst}++;
 
     print $makefile "$dst : $src\n";
     print $makefile "\t$_\n" for @commands;
