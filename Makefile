@@ -12,10 +12,13 @@ clean:
 calculate: calculate.c
 	$(CC) $(CFLAGS) -o $@ $< -lgsl -lgslcblas -lm
 
-video: calculate animate.pl slides-png label-integral.png label-envelope.png label-integrand.png
+animate: animate.pl slides.tex
 	rm -rf links Makefile.generated
-	mkdir -p links tmp
+	mkdir -p links
 	./animate.pl <slides.tex
+
+video: calculate animate slides-png label-integral.png label-envelope.png label-integrand.png
+	mkdir -p tmp
 	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
 
