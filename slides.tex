@@ -241,12 +241,12 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %: });
 
 %: seq_name('approx');
-%: animate(5, sub {
-%:     my $t = t_xaby(1, 0.3, 0.1, 0.1, 15, 0.5, 0.5, 0.5, $_[0]);
+%: animate(10, sub {
+%:     my $t = t_xaby(1, 0.3, 0.1, 0.5, 15, 0.1, 0.1, 0.1, $_[0]);
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d 1'),
 %:      sprintf(' --yrange %.2g:%.2g', -$t, $t).
 %:      q{ --pre-plot 'm = 1'
-%:         --append-plot 'sqrt(2*m*pi/x)*exp(-m*x) with lines lc rgb "black" lt 3' },
+%:         --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3' },
 %:      $im_int]
 %: });
 
