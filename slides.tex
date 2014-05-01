@@ -353,7 +353,9 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:     [sprintf($opts.' --Pr 45 --Pi 45 --d 1'),
 %:      sprintf(' --yrange %.2g:%.2g', -$t, $t).
 %:      q{ --pre-plot 'm = 1'
-%:         --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3' },
+%:         --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3'
+%:         --append-plot '"tmp/bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"'
+%:       },
 %:      $im_int]
 %: });
 

@@ -9,6 +9,7 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_integration.h>
+#include <gsl/gsl_sf_bessel.h>
 
 #define MAX_NPOINTS  100
 
@@ -78,6 +79,14 @@ gsl_complex f_integrand(gsl_complex p, const Params *params)
     return gsl_complex_mul(
             f_envelope(p, params),
             gsl_complex_exp(gsl_complex_mul_imag(p, r)));
+}
+
+
+gsl_complex f_bessel(gsl_complex p, const Params *params)
+{
+    double m = params->m;
+
+    return gsl_complex_rect(0, 2*m * gsl_sf_bessel_K1(m * GSL_REAL(p)));
 }
 
 
@@ -369,7 +378,8 @@ void print_usage(FILE *os, int exitcode)
 enum {
     OPT_SELECT_ENVELOPE,
     OPT_SELECT_INTEGRAND,
-    OPT_SELECT_INTEGRAL
+    OPT_SELECT_INTEGRAL,
+    OPT_SELECT_BESSEL
 };
 
 enum {
@@ -425,6 +435,7 @@ int main(int argc, char **argv)
       { "help",      0, NULL, 'h' },
       { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
       { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "bessel",    0, &opt_select, OPT_SELECT_BESSEL },
       { "d",         1, NULL, 'd' },
       { "n",         1, NULL, 'n' },
       { "m",         1, NULL, 'm' },
@@ -510,9 +521,14 @@ int main(int argc, char **argv)
     if (opt_select != OPT_SELECT_INTEGRAL)
     {
         FILE *os = fopen(ctx.filename_data, "w");
-        tabulate(os, (ComplexFunction)
-                ((opt_select == OPT_SELECT_INTEGRAND) ? &f_integrand : &f_envelope),
-                &params, opt_z0, opt_z1, opt_n);
+        ComplexFunction func;
+        switch (opt_select)
+        {
+            case OPT_SELECT_ENVELOPE : func = (ComplexFunction) &f_envelope; break;
+            case OPT_SELECT_INTEGRAND: func = (ComplexFunction) &f_integrand; break;
+            case OPT_SELECT_BESSEL   : func = (ComplexFunction) &f_bessel; break;
+        }
+        tabulate(os, func, &params, opt_z0, opt_z1, opt_n);
         fclose(os);
 
         Contour contour;

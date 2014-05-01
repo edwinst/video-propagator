@@ -20,7 +20,13 @@ animate: animate.pl slides.tex
 	mkdir -p links
 	./animate.pl <slides.tex
 
-video: calculate animate slides-png label-integral.png label-envelope.png label-integrand.png
+tmp/bessel-FUNCTION.dat: calculate
+	mkdir -p tmp
+	./calculate --prefix tmp/bessel- --bessel --m 1 --z0 0.1 --z1 10
+
+labels: label-integral.png label-envelope.png label-integrand.png label-branch-cut-neg.png label-branch-cut-pos.png
+
+video: calculate animate slides-png labels tmp/bessel-FUNCTION.dat
 	mkdir -p tmp
 	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
