@@ -28,6 +28,8 @@
 \newcommand{\com}[2]{[{#1},{#2}]}
 \newcommand{\phixy}{\Braket{0|\phi(x)\phi(y)|0}}
 \newcommand{\intii}{\int_{-\infty}^{+\infty}}
+\newcommand{\limdel}{\lim_{\delta \to 0}}
+\newcommand{\integral}{\intii dp \integrand}
 
 \title{Contour integral of free field propagator}
 \author{Edwin Steiner}
@@ -44,6 +46,7 @@
 
 
 \begin{frame}
+% XXX cite Peskin&Schroeder
 For a free massive scalar field
 
 \pause
@@ -456,7 +459,59 @@ juggling signs, using $\omp = \sqrtpm = \ommp$:
 & = \frac{-i}{2(2\pi)^2 r} \intii dp \frac{p e^{ipr}}{\omp}
 \end{split}
 \end{equation*}
+\end{frame}
+
+
+\begin{frame}
+For the U-shaped contour we define three pieces ($\delta > 0$):
+\begin{itemize}
+\item $C_1$: straight line $p = i\rho - \delta$ with $\int_{C_1} dp = i \int_\infty^m d\rho$
+\item $C_2$: half circle $p = im + \delta e^{i\theta}$ with $\int_{C_2} dp = i\delta \int_\pi^{2\pi} d\theta e^{i\theta}$
+\item $C_3$: straight line $p = i\rho + \delta$ with $\int_{C_3} dp = i \int_m^\infty d\rho$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+
+With $\sqrt{m^2 - \rho^2 - 2i\rho\delta} \to -i \sqrt{\rho^2 - m^2}$:
+
+\begin{equation*}
+\begin{split}
+\limdel \int_{C_1} dp \integrand &= \limdel i \int_\infty^m d\rho \frac{(i\rho - \delta)e^{i(i\rho - \delta)r}}{\sqrt{m^2 - \rho^2 - 2i\rho\delta}} \\
+&= i \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\end{split}
+\end{equation*}
+
+With $\sqrt{m^2 - \rho^2 + 2i\rho\delta} \to i \sqrt{\rho^2 - m^2}$:
+
+\begin{equation*}
+\begin{split}
+\limdel \int_{C_3} dp \integrand &= \limdel i \int_m^\infty d\rho \frac{(i\rho + \delta)e^{i(i\rho + \delta)r}}{\sqrt{m^2 - \rho^2 + 2i\rho\delta}} \\
+&= i \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\end{split}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+The $\int_{C_2}$ integral vanishes for $\delta \to 0$ like $\sqrt{\delta}$:
+
+\begin{equation*}
+\left| \int_{C_2} dp \integrand \right| \leq \delta \int_\pi^{2\pi} d\theta
+\frac{(\mathrm{bounded})}{\sqrt{2m\delta}} \propto \sqrt{\delta} \to 0
+\end{equation*}
+
+So finally, using this contour, we have:
+
+\begin{equation*}
+\begin{split}
+\phixy &= \frac{-i}{2(2\pi)^2r} \integral \\
+       &= \frac{1}{(2\pi)^2 r} \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\end{split}
+\end{equation*}
 
 \end{frame}
+
 
 \end{document}
