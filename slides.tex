@@ -2,9 +2,27 @@
 
 \usetheme{Berlin}
 
-\newcommand{\envelope}{\frac{p}{\sqrt{p^2 + m^2}}}
+\usepackage{braket}
+
+\newcommand{\sqrtpm}{\sqrt{p^2 + m^2}}
+\newcommand{\envelope}{\frac{p}{\sqrtpm}}
 \newcommand{\integrand}{\frac{p e^{ipr}}{\sqrt{p^2 + m^2}}}
 \newcommand{\CC}{\mathbb{C}}
+
+\newcommand{\vp}{\mathbf{p}}
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vy}{\mathbf{y}}
+\newcommand{\vr}{\mathbf{r}}
+\newcommand{\vpp}{\mathbf{p}'}
+\newcommand{\omp}{\omega_{p}}
+\newcommand{\omvp}{\omega_{\vp}}
+\newcommand{\ap}{a_{\vp}}
+\newcommand{\adp}{a^\dagger_{\vp}}
+\newcommand{\adpp}{a^\dagger_{\vpp}}
+\newcommand{\intpthree}{\int \frac{d^3\vp}{(2\pi)^3}}
+\newcommand{\com}[2]{[{#1},{#2}]}
+\newcommand{\phixy}{\Braket{0|\phi(x)\phi(y)|0}}
+\newcommand{\intii}{\int_{-\infty}^{+\infty}}
 
 \title{Contour integral of free field propagator}
 \author{Edwin Steiner}
@@ -21,12 +39,45 @@
 
 
 \begin{frame}
-2-point function of a free scalar field, for purely spatial separations $r > 0$:
+For a free massive scalar field
 
-% XXX define r (vector)
-% XXX m > 0
+\pause
+$$\phi(x) = \intpthree \frac{1}{\sqrt{2\omvp}} \left\{ e^{-ipx} \ap + e^{ipx} \adp \right\}$$
 
-$$\int_{-\infty}^{\infty} dp \integrand.$$
+with
+
+$$\omvp = \sqrt{\vp^2 + m^2}$$
+
+\pause
+we want to calculate the \alert{2-point function}
+% XXX check term
+
+\pause
+$$\phixy$$
+
+\pause
+for \alert{purely spatial} separations $\vx - \vy = \vr, x^0 - y^0 = 0$.
+
+\end{frame}
+
+
+\begin{frame}
+Plugging in the fields and using $\com{\ap}{\adpp} = (2\pi)^3 \delta(\vp - \vpp)$ we get:
+
+\pause
+$$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} dp$$
+
+\pause
+(See end of video for details.)
+
+\end{frame}
+
+
+
+\begin{frame}
+The only step left is to evaluate the integral
+
+$$\int_{-\infty}^{\infty} dp \integrand$$
 
 \pause
 Problem: \alert{This integral does not converge!} (Neither in Lebesgue's
@@ -40,7 +91,7 @@ Let's consider the integrand
 
 $$\integrand$$
 
-as a complex function of $p \in \CC$.
+as a function of a \alert{complex} variable $p$.
 
 \end{frame}
 
@@ -82,6 +133,7 @@ $$\envelope$$
 
 \pause
 \item For $|p| \rightarrow \infty$ this goes to  a pure phase.
+% XXX check if it is +/- 1
 
 \pause
 \item There are branch point \alert{singularities} at $p = im$ and $p = -im$.
@@ -116,6 +168,9 @@ $$\envelope$$
 %:     [sprintf('--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y),
 %:      $preplot, $im_env.$im]
 %: });
+
+% XXX blink branch cut
+% XXX label the window into the complex plane
 
 \begin{frame}
 Including the exponential we get
@@ -181,10 +236,16 @@ which is
 % XXX introduce numerical integration
 
 \begin{frame}
-Let's try a sharp cutoff at $p = \pm \Lambda$:
+Let's do some numerical integration!
+\end{frame}
+
+
+\begin{frame}
+We try a sharp cutoff at $p = \pm \Lambda$:
 
 $$\int_{-\Lambda}^{+\Lambda} dp \integrand$$
 
+% XXX move down
 It looks like this as a function of $r$:
 \end{frame}
 
@@ -204,6 +265,8 @@ It looks like this as a function of $r$:
 %:      $im_int]
 %: });
 
+% XXX label contour windows
+
 
 \begin{frame}
 We see a function with:
@@ -219,8 +282,10 @@ We see a function with:
 \pause
 By deforming the integration contour we can show that indeed \alert{only}
 the cutoff momentum contributes to the oscillations.
+\end{frame}
 
-\pause
+
+\begin{frame}
 Witness the miracle of \alert{Cauchy's theorem}!
 % XXX look up
 \end{frame}
@@ -272,6 +337,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 % from the U-shaped part of the contour close to the singularity.
 % For r >> 1/m we can find an analytical approximation:
 % XXX approximation for r >> 1/m
+% XXX modified Bessel function as exact solution
 
 %: seq_name('approx');
 %: animate(10, sub {
@@ -315,5 +381,6 @@ Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 
 % XXX details of integral equations
 % XXX details of analytic approximation
+% XXX proof that integral does not converge
 
 \end{document}
