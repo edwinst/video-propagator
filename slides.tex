@@ -15,11 +15,16 @@
 \newcommand{\vr}{\mathbf{r}}
 \newcommand{\vpp}{\mathbf{p}'}
 \newcommand{\omp}{\omega_{p}}
+\newcommand{\ommp}{\omega_{-p}}
 \newcommand{\omvp}{\omega_{\vp}}
+\newcommand{\omvpp}{\omega_{\vpp}}
 \newcommand{\ap}{a_{\vp}}
+\newcommand{\app}{a_{\vpp}}
 \newcommand{\adp}{a^\dagger_{\vp}}
 \newcommand{\adpp}{a^\dagger_{\vpp}}
+\newcommand{\bysqrt}[1]{\frac{1}{\sqrt{#1}}}
 \newcommand{\intpthree}{\int \frac{d^3\vp}{(2\pi)^3}}
+\newcommand{\intpthreeppthree}{\int \frac{d^3\vp}{(2\pi)^3} \frac{d^3\vpp}{(2\pi)^3}}
 \newcommand{\com}[2]{[{#1},{#2}]}
 \newcommand{\phixy}{\Braket{0|\phi(x)\phi(y)|0}}
 \newcommand{\intii}{\int_{-\infty}^{+\infty}}
@@ -382,5 +387,76 @@ Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 % XXX details of integral equations
 % XXX details of analytic approximation
 % XXX proof that integral does not converge
+
+
+\begin{frame}
+Plugging in the fields, we get:
+
+\begin{equation*}
+\begin{split}
+& \phixy = \intpthreeppthree \bysqrt{2\omvp} \bysqrt{2\omvpp} \\
+\bigg\{ & e^{-ipx-ip'y} \braket{0|\ap\app|0} + e^{-ipx+ip'y} \braket{0|\ap\adpp|0} \\
+        & + e^{ipx-ip'y} \braket{0|\adp\app|0} + e^{ipx+ip'y} \braket{0|\adp\adpp|0} \bigg\}
+\end{split}
+\end{equation*}
+
+using $\ap\ket{0} = 0$:
+
+\begin{equation*}
+= \intpthreeppthree \bysqrt{2\omvp} \bysqrt{2\omvpp}
+\bigg\{ e^{-ipx+ip'y} \braket{0|\ap\adpp - \adpp\ap|0} \bigg\}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+using $\com{\ap}{\adpp} = (2\pi)^3 \delta(\vp - \vpp)$, integrating out $\vpp$:
+
+\begin{equation*}
+\phixy = \intpthree \frac{1}{2\omvp} e^{-ip(x-y)}
+\end{equation*}
+
+for $x^0 - y^0 = 0$:
+
+\begin{equation*}
+\phixy = \intpthree \frac{1}{2\omvp} e^{i\vp\cdot\vr}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+going to spherical coordinates $p, \theta, \psi$ (axis along $\vr$):
+
+\begin{equation*}
+= \frac{1}{2(2\pi)^3} \int_0^\infty dp \frac{p^2}{\omp} \int_0^\pi d\theta \sin(\theta) e^{ipr\cos{\theta}}
+\int_0^{2\pi} d\psi
+\end{equation*}
+
+integrating over $\psi$ and substituting $u = ipr\cos(\theta)$:
+
+\begin{equation*}
+\begin{split}
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \int_{ipr}^{-ipr} du e^{u} \\
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\}
+\end{split}
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame}
+
+juggling signs, using $\omp = \sqrtpm = \ommp$:
+
+\begin{equation*}
+\begin{split}
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\} \\
+& = \frac{-i}{2(2\pi)^2 r} \left\{ \int_0^\infty dp \frac{-p e^{-ipr}}{\ommp} + \int_0^\infty dp \frac{p e^{ipr}}{\omp} \right\} \\
+& = \frac{-i}{2(2\pi)^2 r} \left\{ -\int_0^{-\infty} dp \frac{p e^{ipr}}{\omp} + \int_0^\infty dp \frac{p e^{ipr}}{\omp} \right\} \\
+& = \frac{-i}{2(2\pi)^2 r} \intii dp \frac{p e^{ipr}}{\omp}
+\end{split}
+\end{equation*}
+
+\end{frame}
 
 \end{document}
