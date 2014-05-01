@@ -3,6 +3,7 @@
 \usetheme{Berlin}
 
 \usepackage{braket}
+\usepackage{esdiff}
 
 \newcommand{\sqrtpm}{\sqrt{p^2 + m^2}}
 \newcommand{\envelope}{\frac{p}{\sqrtpm}}
@@ -22,14 +23,22 @@
 \newcommand{\app}{a_{\vpp}}
 \newcommand{\adp}{a^\dagger_{\vp}}
 \newcommand{\adpp}{a^\dagger_{\vpp}}
+
+\newcommand{\di}[1]{\diff{}{#1}}
+\newcommand{\diffop}{\mathop{}\!\mathrm{d}}
+\newcommand{\dip}{\diffop p}
+\newcommand{\du}{\diffop u}
+\newcommand{\drho}{\diffop \rho}
+\newcommand{\dtheta}{\diffop \theta}
+
 \newcommand{\bysqrt}[1]{\frac{1}{\sqrt{#1}}}
-\newcommand{\intpthree}{\int \frac{d^3\vp}{(2\pi)^3}}
-\newcommand{\intpthreeppthree}{\int \frac{d^3\vp}{(2\pi)^3} \frac{d^3\vpp}{(2\pi)^3}}
+\newcommand{\intpthree}{\int \frac{\diffop^3\vp}{(2\pi)^3}}
+\newcommand{\intpthreeppthree}{\int \frac{\diffop^3\vp}{(2\pi)^3} \frac{\diffop^3\vpp}{(2\pi)^3}}
 \newcommand{\com}[2]{[{#1},{#2}]}
 \newcommand{\phixy}{\Braket{0|\phi(x)\phi(y)|0}}
 \newcommand{\intii}{\int_{-\infty}^{+\infty}}
 \newcommand{\limdel}{\lim_{\delta \to 0}}
-\newcommand{\integral}{\intii dp \integrand}
+\newcommand{\integral}{\intii \dip \integrand}
 
 \title{Contour integral of free field propagator}
 \author{Edwin Steiner}
@@ -73,7 +82,7 @@ for \alert{purely spatial} separations $\vx - \vy = \vr, x^0 - y^0 = 0$.
 Plugging in the fields and using $\com{\ap}{\adpp} = (2\pi)^3 \delta(\vp - \vpp)$ we get:
 
 \pause
-$$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} dp$$
+$$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} \dip$$
 
 \pause
 (See end of video for details.)
@@ -85,7 +94,7 @@ $$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} dp$$
 \begin{frame}
 The only step left is to evaluate the integral
 
-$$\int_{-\infty}^{\infty} dp \integrand$$
+$$\int_{-\infty}^{\infty} \dip \integrand$$
 
 \pause
 Problem: \alert{This integral does not converge!} (Neither in Lebesgue's
@@ -251,7 +260,7 @@ Let's do some numerical integration!
 \begin{frame}
 We try a sharp cutoff at $p = \pm \Lambda$:
 
-$$\int_{-\Lambda}^{+\Lambda} dp \integrand$$
+$$\int_{-\Lambda}^{+\Lambda} \dip \integrand$$
 
 % XXX move down
 It looks like this as a function of $r$:
@@ -433,7 +442,7 @@ for $x^0 - y^0 = 0$:
 going to spherical coordinates $p, \theta, \psi$ (axis along $\vr$):
 
 \begin{equation*}
-= \frac{1}{2(2\pi)^3} \int_0^\infty dp \frac{p^2}{\omp} \int_0^\pi d\theta \sin(\theta) e^{ipr\cos{\theta}}
+= \frac{1}{2(2\pi)^3} \int_0^\infty \dip \frac{p^2}{\omp} \int_0^\pi \dtheta \sin(\theta) e^{ipr\cos{\theta}}
 \int_0^{2\pi} d\psi
 \end{equation*}
 
@@ -441,8 +450,8 @@ integrating over $\psi$ and substituting $u = ipr\cos(\theta)$:
 
 \begin{equation*}
 \begin{split}
-& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \int_{ipr}^{-ipr} du e^{u} \\
-& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\}
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty \dip \frac{p}{\omp} \int_{ipr}^{-ipr} du e^{u} \\
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty \dip \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\}
 \end{split}
 \end{equation*}
 
@@ -455,10 +464,10 @@ juggling signs, using $\omp = \sqrtpm = \ommp$:
 
 \begin{equation*}
 \begin{split}
-& = \frac{i}{2(2\pi)^2 r} \int_0^\infty dp \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\} \\
-& = \frac{-i}{2(2\pi)^2 r} \left\{ \int_0^\infty dp \frac{-p e^{-ipr}}{\ommp} + \int_0^\infty dp \frac{p e^{ipr}}{\omp} \right\} \\
-& = \frac{-i}{2(2\pi)^2 r} \left\{ -\int_0^{-\infty} dp \frac{p e^{ipr}}{\omp} + \int_0^\infty dp \frac{p e^{ipr}}{\omp} \right\} \\
-& = \frac{-i}{2(2\pi)^2 r} \intii dp \frac{p e^{ipr}}{\omp}
+& = \frac{i}{2(2\pi)^2 r} \int_0^\infty \dip \frac{p}{\omp} \big\{ e^{-ipr} - e^{ipr} \big\} \\
+& = \frac{-i}{2(2\pi)^2 r} \left\{ \int_0^\infty \dip \frac{-p e^{-ipr}}{\ommp} + \int_0^\infty \dip \frac{p e^{ipr}}{\omp} \right\} \\
+& = \frac{-i}{2(2\pi)^2 r} \left\{ -\int_0^{-\infty} \dip \frac{p e^{ipr}}{\omp} + \int_0^\infty \dip \frac{p e^{ipr}}{\omp} \right\} \\
+& = \frac{-i}{2(2\pi)^2 r} \intii \dip \frac{p e^{ipr}}{\omp}
 \end{split}
 \end{equation*}
 \end{frame}
@@ -467,9 +476,9 @@ juggling signs, using $\omp = \sqrtpm = \ommp$:
 \begin{frame}
 For the U-shaped contour we define three pieces ($\delta > 0$):
 \begin{itemize}
-\item $C_1$: straight line $p = i\rho - \delta$ with $\int_{C_1} dp = i \int_\infty^m d\rho$
-\item $C_2$: half circle $p = im + \delta e^{i\theta}$ with $\int_{C_2} dp = i\delta \int_\pi^{2\pi} d\theta e^{i\theta}$
-\item $C_3$: straight line $p = i\rho + \delta$ with $\int_{C_3} dp = i \int_m^\infty d\rho$
+\item $C_1$: straight line $p = i\rho - \delta$ with $\int_{C_1} \dip = i \int_\infty^m \drho$
+\item $C_2$: half circle $p = im + \delta e^{i\theta}$ with $\int_{C_2} \dip = i\delta \int_\pi^{2\pi} \dtheta e^{i\theta}$
+\item $C_3$: straight line $p = i\rho + \delta$ with $\int_{C_3} \dip = i \int_m^\infty \drho$
 \end{itemize}
 \end{frame}
 
@@ -480,8 +489,8 @@ With $\sqrt{m^2 - \rho^2 - 2i\rho\delta} \to -i \sqrt{\rho^2 - m^2}$:
 
 \begin{equation*}
 \begin{split}
-\limdel \int_{C_1} dp \integrand &= \limdel i \int_\infty^m d\rho \frac{(i\rho - \delta)e^{i(i\rho - \delta)r}}{\sqrt{m^2 - \rho^2 - 2i\rho\delta}} \\
-&= i \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\limdel \int_{C_1} \dip \integrand &= \limdel i \int_\infty^m \drho \frac{(i\rho - \delta)e^{i(i\rho - \delta)r}}{\sqrt{m^2 - \rho^2 - 2i\rho\delta}} \\
+&= i \int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
 \end{split}
 \end{equation*}
 
@@ -489,8 +498,8 @@ With $\sqrt{m^2 - \rho^2 + 2i\rho\delta} \to i \sqrt{\rho^2 - m^2}$:
 
 \begin{equation*}
 \begin{split}
-\limdel \int_{C_3} dp \integrand &= \limdel i \int_m^\infty d\rho \frac{(i\rho + \delta)e^{i(i\rho + \delta)r}}{\sqrt{m^2 - \rho^2 + 2i\rho\delta}} \\
-&= i \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\limdel \int_{C_3} \dip \integrand &= \limdel i \int_m^\infty \drho \frac{(i\rho + \delta)e^{i(i\rho + \delta)r}}{\sqrt{m^2 - \rho^2 + 2i\rho\delta}} \\
+&= i \int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
 \end{split}
 \end{equation*}
 \end{frame}
@@ -500,7 +509,7 @@ With $\sqrt{m^2 - \rho^2 + 2i\rho\delta} \to i \sqrt{\rho^2 - m^2}$:
 The $\int_{C_2}$ integral vanishes for $\delta \to 0$ like $\sqrt{\delta}$:
 
 \begin{equation*}
-\left| \int_{C_2} dp \integrand \right| \leq \delta \int_\pi^{2\pi} d\theta
+\left| \int_{C_2} \dip \integrand \right| \leq \delta \int_\pi^{2\pi} \dtheta
 \frac{(\mathrm{bounded})}{\sqrt{2m\delta}} \propto \sqrt{\delta} \to 0
 \end{equation*}
 
@@ -509,10 +518,30 @@ So finally, using this contour, we have:
 \begin{equation*}
 \begin{split}
 \phixy &= \frac{-i}{2(2\pi)^2r} \integral \\
-       &= \frac{1}{(2\pi)^2 r} \int_m^\infty d\rho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+       &= \frac{1}{(2\pi)^2 r} \int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}
+\end{split}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+Exact solution with the modified Bessel function $\mathrm{K}_1$:
+
+\begin{equation*}
+\begin{split}
+&\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}} =
+\int_m^\infty \drho \frac{\frac{\rho}{m} e^{-\frac{\rho}{m} mr}}{\sqrt{(\frac{\rho}{m})^2 - 1}} \\
+&= m \int_1^\infty \frac{u e^{-umr}}{\sqrt{u^2 - 1}} \du = m \int_1^\infty e^{-umr} \left( \di{u} \sqrt{u^2 - 1} \right) \du \\
+&= -m \int_1^\infty \left( \di{u} e^{-umr} \right) \sqrt{u^2 - 1} \du = m(mr) \int_1^\infty e^{-u(mr)} \sqrt{u^2 - 1} \du \\
+&= m \  \mathrm{K}_1(mr)
 \end{split}
 \end{equation*}
 
+therefore
+
+\begin{equation*}
+\phixy = \frac{m}{(2\pi)^2 r} \  \mathrm{K}_1(mr) \quad \textrm{for} \quad x^0 = y^0,\ mr > 0
+\end{equation*}
 \end{frame}
 
 
