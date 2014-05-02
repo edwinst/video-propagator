@@ -39,6 +39,7 @@
 \newcommand{\intii}{\int_{-\infty}^{+\infty}}
 \newcommand{\limdel}{\lim_{\delta \to 0}}
 \newcommand{\integral}{\intii \dip \integrand}
+\newcommand{\cintegral}{\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}}
 
 \title{Contour integral of free field propagator}
 \author{Edwin Steiner}
@@ -525,11 +526,31 @@ So finally, using this contour, we have:
 
 
 \begin{frame}
+Approximate solution for $r \gg \frac{1}{m}$:
+
+\begin{equation*}
+\begin{split}
+&\cintegral = \int_0^\infty \drho \frac{(\rho + m)e^{-(\rho + m)r}}{\sqrt{\rho(\rho + 2m)}} \\
+&\approx e^{-mr} \int_0^\infty \drho \frac{m e^{-\rho r}}{\sqrt{2m\rho}}
+= \sqrt{\frac{m}{2}} e^{-mr} \int_0^\infty \drho \frac{e^{-\rho r}}{\sqrt{\rho}} \\
+&= \sqrt{\frac{m}{2}} e^{-mr} 2 \int_0^\infty e^{-ru^2} \du = \sqrt{\frac{\pi m}{2r}} e^{-mr}
+\end{split}
+\end{equation*}
+
+Therefore:
+\begin{equation*}
+\phixy \approx \sqrt{\frac{m}{32\pi^3 r^3}} e^{-mr}
+\end{equation*}
+
+\end{frame}
+
+
+\begin{frame}
 Exact solution with the modified Bessel function $\mathrm{K}_1$:
 
 \begin{equation*}
 \begin{split}
-&\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}} =
+&\cintegral =
 \int_m^\infty \drho \frac{\frac{\rho}{m} e^{-\frac{\rho}{m} mr}}{\sqrt{(\frac{\rho}{m})^2 - 1}} \\
 &= m \int_1^\infty \frac{u e^{-umr}}{\sqrt{u^2 - 1}} \du = m \int_1^\infty e^{-umr} \left( \di{u} \sqrt{u^2 - 1} \right) \du \\
 &= -m \int_1^\infty \left( \di{u} e^{-umr} \right) \sqrt{u^2 - 1} \du = m(mr) \int_1^\infty e^{-u(mr)} \sqrt{u^2 - 1} \du \\
@@ -537,7 +558,7 @@ Exact solution with the modified Bessel function $\mathrm{K}_1$:
 \end{split}
 \end{equation*}
 
-therefore
+Therefore:
 
 \begin{equation*}
 \phixy = \frac{m}{(2\pi)^2 r} \  \mathrm{K}_1(mr) \quad \textrm{for} \quad x^0 = y^0,\ mr > 0
