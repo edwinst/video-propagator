@@ -406,7 +406,7 @@ More carefully we can consider the fields as \alert{distributions} which must be
 
 
 \begin{frame}
-For simplicity, let's apply a Gaussian smearing $e^{-\frac({(x' - x)^2}{2\sigma^2}}$ only along $\vr$.
+For simplicity, let's apply a Gaussian smearing $e^{-\frac{(x' - x)^2}{2\sigma^2}}$ only along $\vr$.
 
 \pause
 This causes an exponential suppression of high momenta $p$:
@@ -421,13 +421,33 @@ This causes an exponential suppression of high momenta $p$:
 
 %: seq_name('smear-integrand');
 %: animate(12, sub {
-%:     my $sigma = interpol_xaby(2, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 0.01, $_[0]);
+%:     my $sigma = interpol_xaby(3, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 0.1, $_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying sigma..." at 0.25,2 font "serif,20"'
 %:          --pre-plot 'set label "sigma = %4.2g" at 0.25,1.5 font "serif,20"'}, $sigma),
 %:      $im_igds]
 %: });
+
+
+\begin{frame}
+Let's smear the fields by $\sigma$...
+
+\pause
+...and then push the contour far past $p = \frac{1}{\sigma}$.
+\end{frame}
+
+
+%: seq_name('smear-integral');
+%: animate(24, sub {
+%:     my $Pr = interpol_xaby(4, 0.1, 0.1, 0.1, 15, 70, 15, 70, $_[0]);
+%:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "1/sigma = 30" at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:      $im_ints]
+%: });
+
 
 %: animate(10, sub {
 %:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);
