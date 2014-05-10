@@ -189,6 +189,7 @@ $$\envelope$$
 
 % XXX blink branch cut
 % XXX label the window into the complex plane
+% XXX color "contour" line differently than the integration contour
 
 \begin{frame}
 Including the exponential we get
@@ -334,6 +335,68 @@ Witness the miracle of \alert{Cauchy's theorem}!
 
 % XXX observations about parts of the contour
 % Parts pushed high into the upper half plane become negligible.
+
+
+\begin{frame}
+Parts of the contour:
+
+\begin{itemize}
+\item Parts high in the upper half plane are neglibible.
+
+%: seq_name('contour-top');
+%: animate(10, sub {
+%:     my $t = $_[0];
+%:     my $preplot = '';
+%:     if ($_[0] > 0.1) {
+%:         $preplot .= q{ --pre-plot 'set arrow from 1.9,6.8 to 1,5 head'};
+%:         $preplot .= q{ --pre-plot 'set label "no (visible) change" at 2,7'};
+%:     }
+%:     if ($_[0] > 0.2) {
+%:         $preplot .= q{ --pre-plot 'set arrow from 3.2,-3.7 to 3.2,-4.9 head'};
+%:         $preplot .= q{ --pre-plot 'set label "omitting top part" at 2.5,-3'};
+%:     }
+%:     my $copts = '';
+%:     if ((($t >= 0.25) && ($t < 0.5)) || ($t >= 0.75)) {
+%:         $copts = ' --contour-IUI';
+%:     }
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d 0'.$copts),
+%:      $preplot, $im_int]
+%: });
+
+\pause
+\item Left and right vertical parts contribute the cutoff oscillations.
+
+%: seq_name('contour-ii');
+%: animate(10, sub {
+%:     my $t = $_[0];
+%:     my $preplot = '';
+%:     my $copts = ' --contour-IUI';
+%:     if ($t > 0.1) {
+%:         $preplot .= q{ --pre-plot 'set arrow from 3.2,-3.7 to 3.2,-4.9 head'};
+%:         $preplot .= q{ --pre-plot 'set label "omitting middle part" at 2.5,-3'};
+%:     }
+%:     if ((($t >= 0.25) && ($t < 0.5)) || ($t >= 0.75)) {
+%:         $copts = ' --contour-II';
+%:     }
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d 0'.$copts),
+%:      $preplot, $im_int]
+%: });
+
+\pause
+\item The U-shaped part contributes the (roughly) exponentially falling part.
+
+%: seq_name('contour-u');
+%: animate(10, sub {
+%:     my $d = interpol_xaby(1, 0.1, 0.1, 0.7, 0, 1, 1, 1, $_[0]);
+%:     my $preplot = '';
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.2g --contour-IUI', $d),
+%:      $preplot, $im_int]
+%: });
+
+\end{itemize}
+\end{frame}
+
+
 % XXX justification of contour change (distributional character of the fields)
 % Intuitively it is clear that the oscillations are an artifact
 % of the sharp cutoff.
