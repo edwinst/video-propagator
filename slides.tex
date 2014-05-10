@@ -45,10 +45,12 @@
 \author{Edwin Steiner}
 \date{\today}
 % XXX add git hash
+% XXX add CC-BY license
 
 
 \begin{document}
 
+% XXX teaser (with Cauchy?)
 
 \begin{frame}
 \titlepage
@@ -57,7 +59,7 @@
 
 \begin{frame}
 % XXX cite Peskin&Schroeder
-For a free massive scalar field
+For a free massive \alert{scalar field}
 
 \pause
 $$\phi(x) = \intpthree \frac{1}{\sqrt{2\omvp}} \left\{ e^{-ipx} \ap + e^{ipx} \adp \right\}$$
@@ -86,6 +88,7 @@ Plugging in the fields and using $\com{\ap}{\adpp} = (2\pi)^3 \delta(\vp - \vpp)
 $$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} \dip$$
 
 \pause
+\medskip
 (See end of video for details.)
 
 \end{frame}
@@ -203,11 +206,9 @@ which is
 \item \alert{oscillating} along the real axis,
 
 \pause
-\item \alert{exponentially damped} in the upper half plane.
+\item \alert{exponentially suppressed} in the upper half plane.
 \end{itemize}
 \end{frame}
-
-% animate integrand on the real line, rotating to vertical segments to show damping
 
 %: animate(3, sub { ['--integrand --z0 -10 --z1 10 --m 1 --r 2', '', $im_igd] });
 
@@ -400,14 +401,16 @@ Parts of the contour:
 \begin{frame}
 It is clear that the oscillations are an \alert{artifact of the cutoff}.
 
+\medskip
 \pause
 More carefully we can consider the fields as \alert{distributions} which must be \alert{smeared} by test functions.
 \end{frame}
 
 
 \begin{frame}
-For simplicity, let's apply a Gaussian smearing $e^{-\frac{(x' - x)^2}{2\sigma^2}}$ only along $\vr$.
+For simplicity, let's apply a \alert{Gaussian} smearing $e^{-\frac{(x' - x)^2}{2\sigma^2}}$ to the fields only along $\vr$.
 
+\medskip
 \pause
 This causes an exponential suppression of high momenta $p$:
 
@@ -416,12 +419,13 @@ This causes an exponential suppression of high momenta $p$:
 \end{equation*}
 
 \pause
+\medskip
 (See end of video for details.)
 \end{frame}
 
 %: seq_name('smear-integrand');
 %: animate(12, sub {
-%:     my $sigma = interpol_xaby(3, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 0.1, $_[0]);
+%:     my $sigma = interpol_xaby(3, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 1/30, $_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying sigma..." at 0.25,2 font "serif,20"'
