@@ -22,6 +22,7 @@ my $opt_z1 = '0,0';
 my $opt_yrange;
 my $opt_contour_II;
 my $opt_contour_IUI;
+my $opt_smear = 0.0;
 my @opt_pre_plot;
 my @opt_append_plot;
 
@@ -60,6 +61,7 @@ my $result = GetOptions(
         "yrange=s" => \$opt_yrange,
         "contour-II" => \$opt_contour_II,
         "contour-IUI" => \$opt_contour_IUI,
+        "smear=s" => \$opt_smear,
 );
 parse_complex(\$opt_z0);
 parse_complex(\$opt_z1);

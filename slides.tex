@@ -41,7 +41,7 @@
 \newcommand{\integral}{\intii \dip \integrand}
 \newcommand{\cintegral}{\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}}
 
-\title{Contour integral of free field propagator}
+\title{Contour integral for the free field propagator}
 \author{Edwin Steiner}
 \date{\today}
 % XXX add git hash
@@ -168,7 +168,7 @@ $$\envelope$$
 
 %: seq_name('branch-cut');
 %: animate(20, sub {
-%:     my $y = interpol_xaby(4, 0.1, 0.1, 0.1, 0, 0, 2, 2, $_[0]);
+%:     my $y = interpol_xaby(4, 0.1, 0.1, 0.1, 0, 2, 0, 0, $_[0]);
 %:     my $preplot = '';
 %:     my $im = '';
 %:     if ($y >= 1.0) {
@@ -397,14 +397,37 @@ Parts of the contour:
 \end{frame}
 
 
-% XXX justification of contour change (distributional character of the fields)
-% Intuitively it is clear that the oscillations are an artifact
-% of the sharp cutoff.
-%
-% The field operators are actually distributions which need to be smeared
-% by test functions. Any smooth test function will effectively suppress 
-% momenta above a certain scale $\Lambda$. We can always push the contour beyond $\Lambda$
-% to make the "vertical" parts of the contour negligible. 
+\begin{frame}
+It is clear that the oscillations are an \alert{artifact of the cutoff}.
+
+\pause
+More carefully we can consider the fields as \alert{distributions} which must be \alert{smeared} by test functions.
+\end{frame}
+
+
+\begin{frame}
+For simplicity, let's apply a Gaussian smearing $e^{-\frac({(x' - x)^2}{2\sigma^2}}$ only along $\vr$.
+
+\pause
+This causes an exponential suppression of high momenta $p$:
+
+\begin{equation*}
+\intii \dip \integrand e^{-(\sigma p)^2}
+\end{equation*}
+
+\pause
+(See end of video for details.)
+\end{frame}
+
+%: seq_name('smear-integrand');
+%: animate(12, sub {
+%:     my $sigma = interpol_xaby(2, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 0.01, $_[0]);
+%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "varying sigma..." at 0.25,2 font "serif,20"'
+%:          --pre-plot 'set label "sigma = %4.2g" at 0.25,1.5 font "serif,20"'}, $sigma),
+%:      $im_igds]
+%: });
 
 %: animate(10, sub {
 %:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);

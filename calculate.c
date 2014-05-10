@@ -26,6 +26,8 @@ typedef struct Params_s
     double peps;
     double t;
     double d;
+    double sigma;
+    int    smear;
 } Params;
 
 
@@ -66,9 +68,18 @@ gsl_complex f_envelope(gsl_complex p, const Params *params)
 {
     double m = params->m;
 
-    return gsl_complex_div(
+    gsl_complex env = gsl_complex_div(
             p,
             gsl_complex_sqrt(gsl_complex_add_real(gsl_complex_mul(p,p), m*m)));
+
+    if (params->smear)
+    {
+        // we only consider the real part of p for the smearing
+        double sp = params->sigma * GSL_REAL(p);
+        env = gsl_complex_mul_real(env, exp(-sp*sp));
+    }
+
+    return env;
 }
 
 
@@ -451,6 +462,8 @@ int main(int argc, char **argv)
     params.Pi = 60;
     params.peps = 0.2;
     params.t = 0.0;
+    params.smear = 0;
+    params.sigma = 0.0;
 
     const char* opt_prefix = "";
     int opt_select = OPT_SELECT_INTEGRAL;
@@ -478,6 +491,7 @@ int main(int argc, char **argv)
       { "z1",           1, NULL, '1' },
       { "Pr",           1, NULL, 'P' },
       { "Pi",           1, NULL, 'I' },
+      { "smear",        1, NULL, 's' },
       { NULL,           0, NULL, 0   } /* end */
     };
 
@@ -510,6 +524,11 @@ int main(int argc, char **argv)
 
             case 'r':
                 parse_double(optarg, &params.r);
+                break;
+
+            case 's':
+                parse_double(optarg, &params.sigma);
+                params.smear = 1;
                 break;
 
             case 't':

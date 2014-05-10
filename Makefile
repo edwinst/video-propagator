@@ -24,7 +24,8 @@ tmp/bessel-FUNCTION.dat: calculate
 	mkdir -p tmp
 	./calculate --prefix tmp/bessel- --bessel --m 1 --z0 0.1 --z1 10
 
-labels: label-integral.png label-envelope.png label-integrand.png label-branch-cut-neg.png label-branch-cut-pos.png
+labels: label-integral.png label-envelope.png label-integrand.png label-integrand-smeared.png \
+        label-branch-cut-neg.png label-branch-cut-pos.png
 
 video: calculate animate slides-png labels tmp/bessel-FUNCTION.dat
 	mkdir -p tmp

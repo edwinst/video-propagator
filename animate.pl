@@ -25,6 +25,7 @@ my $opts; # XXX HACK
 
 my $im_env = 'label-envelope.png -geometry +100+60 -composite';
 my $im_igd = 'label-integrand.png -geometry +100+60 -composite';
+my $im_igds = 'label-integrand-smeared.png -geometry +100+60 -composite';
 my $im_int = 'label-integral.png -geometry +120+60 -composite';
 
 open(my $makefile, '>', 'Makefile.generated') or die;
