@@ -1,3 +1,4 @@
+%\errorcontextlines 10000
 \documentclass{beamer}
 
 \usetheme{Berlin}
@@ -61,6 +62,9 @@
 %     XXX label abs value as +/-
 %     XXX display abs value one-sided for integral
 %     XXX display 1/sigma in the contour window
+%     XXX credits
+%     XXX space in formulas
+%     XXX use blocks?
 
 \begin{document}
 
@@ -110,10 +114,10 @@ $$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} \dip$$
 
 \pause
 \bigskip
-See Peskin \& Schroeder, \textit{An Introduction to Quantum Field Theory}, 2.50 to 2.52.
+(See end of video for details.)
 
 \medskip
-(See end of video for details.)
+See also Peskin \& Schroeder, \textit{An Introduction to Quantum Field Theory}, 2.50 to 2.52.
 
 \end{frame}
 
@@ -130,7 +134,7 @@ Problem: \alert{This integral does not converge!}
 
 \pause
 \medskip
-Riemann -- ``$\lim_{b \to \infty} \int_0^b \ldots$ does not exist.''
+Riemann -- ``$\lim_{b \to \infty} \int_0^b \ldots$ does not exist.'' (It oscillates.)
 
 \pause
 \medskip
@@ -288,12 +292,12 @@ Let's do some numerical integration!
 
 
 \begin{frame}
-We try a sharp cutoff at $p = \pm \Lambda$:
+We try a sharp \alert{cutoff} at $p = \pm \Lambda$:
 
 $$\int_{-\Lambda}^{+\Lambda} \dip \integrand$$
 
 \bigskip
-It looks like this as a function of $r$:
+It looks like this \alert{as a function of $r$}:
 \end{frame}
 
 % show integral, vary Lambda, vary m(?)
@@ -322,10 +326,11 @@ We see a function with:
 \item strong \alert{oscillations} at the cutoff momentum,
 
 \pause
-\item \alert{average value} falling \alert{exponentially} with $r$.
+\item \alert{``average value''} falling \alert{exponentially} with $r$.
 \end{itemize}
 
 \pause
+\bigskip
 By deforming the integration contour we can show that indeed \alert{only}
 the cutoff momentum contributes to the oscillations.
 \end{frame}
@@ -365,7 +370,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 Parts of the contour...
 
 \begin{itemize}
-\item ... at large imaginary values are neglibible
+\item \alert<1>{... at large imaginary values are neglibible}
 
 %: seq_name('contour-top');
 %: animate(10, sub {
@@ -388,7 +393,7 @@ Parts of the contour...
 %: });
 
 \pause
-\item ... at $\Re p = \pm \Lambda$ contribute the cutoff oscillations
+\item \alert<2>{... at $\Re p = \pm \Lambda$ contribute the cutoff oscillations}
 
 %: seq_name('contour-ii');
 %: animate(10, sub {
@@ -407,7 +412,7 @@ Parts of the contour...
 %: });
 
 \pause
-\item ... close to $\Re p = 0$ contribute the exponentially falling part
+\item \alert<3>{... close to $\Re p = 0$ contribute the exponential part}
 
 %: seq_name('contour-u');
 %: animate(10, sub {
@@ -429,6 +434,7 @@ It is clear that the oscillations are an \alert{artifact of the cutoff}.
 More carefully:
 
 \pause
+\medskip
 We consider the fields as \alert{distributions} and \alert{smear} them with test functions.
 \end{frame}
 
@@ -438,7 +444,7 @@ For simplicity, let's apply a \alert{Gaussian} smearing $e^{-\frac{(x' - x)^2}{2
 
 \medskip
 \pause
-This causes an exponential suppression of high momenta $p$:
+This causes an \alert{exponential suppression of high momenta} $p$:
 
 \begin{equation*}
 \intii \dip \integrand e^{-(\sigma p)^2}
@@ -529,47 +535,68 @@ For this modified contour, the smearing makes no difference...
 %: });
 
 
-%: animate(10, sub {
-%:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 0.1, 1.0, 1.0, $_[0]);
-%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
-%:      sprintf(qq{
-%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
-%:      $im_int]
-%: });
+\begin{frame}
+In the limit, the integral along this U-shaped contour $C$ becomes
 
-% The non-oscillatory part of the integral is dominated by contributions
-% from the U-shaped part of the contour close to the singularity.
-% For r >> 1/m we can find an analytical approximation:
-% XXX approximation for r >> 1/m
-% XXX modified Bessel function as exact solution
+\begin{equation*}
+\int_C \dip \integrand = 2i \cintegral
+\end{equation*}
+
+\medskip
+(See end of video for details.)
+\end{frame}
+
+
+\begin{frame}
+This integral \alert{converges} and we get \alert{approximately}
+
+\begin{equation*}
+\phixy \approx \sqrt{\frac{m}{32\pi^3 r^3}} \ e^{-mr}
+\end{equation*}
+
+\medskip
+for $r \gg \frac{1}{m}$
+
+\medskip
+(See end of video for details.)
+\end{frame}
+
+
+\begin{frame}
+The \alert{exact} result can be written with a \alert{modified Bessel function} $\mathrm{K}_1$:
+
+\begin{equation*}
+\phixy = \frac{m}{(2\pi)^2 r} \  \mathrm{K}_1(mr)
+\end{equation*}
+
+\medskip
+(See end of video for details.)
+\end{frame}
+
+
+\begin{frame}
+Let's \alert{compare} our numerical result with the exact and approximate analytic results...
+\end{frame}
+
 
 %: seq_name('approx');
-%: animate(10, sub {
-%:     my $t = interpol_xaby(1, 0.3, 0.1, 0.5, 15, 0.1, 0.1, 0.1, $_[0]);
-%:     [sprintf($opts.' --Pr 45 --Pi 45 --d 1'),
-%:      sprintf(' --yrange %.2g:%.2g', -$t, $t).
-%:      q{ --pre-plot 'm = 1'
-%:         --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3'
-%:         --append-plot '"tmp/bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"'
-%:       },
+%: animate(20, sub {
+%:     my $t = $_[0];
+%:     my $y = interpol_xaby(1, 0.4, 0.1, 0.5, 15, 0.1, 0.1, 0.1, $t);
+%:     my $plot = '';
+%:     if ($t > 0.1) {
+%:         $plot .= q{ --append-plot '"tmp/bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"' };
+%:     }
+%:     if ($t > 0.2) {
+%:         $plot .= q{ --pre-plot 'm = 1' --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3' };
+%:     }
+%:     if ($t > 0.3) {
+%:         $plot .= q{ --pre-plot 'set label "zooming..." at 5,8 font "serif,20"' };
+%:     }
+%:     [sprintf($opts.' --Pr 70 --Pi 70 --d 2'),
+%:      sprintf(' --yrange %.2g:%.2g', -$y, $y).$plot,
 %:      $im_int]
 %: });
-
-%%: animate(5, sub {
-%%:     my $t = interpol_xaby(1, 0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 2.0, $_[0]);
-%%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
-%%:      sprintf(qq{
-%%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
-%%:      $im_int]
-%%: });
-
-%%: animate(15, sub {
-%%:     my $t = interpol_xaby(4, 0.1, 0.1, 0.1, 2.0, 3.0, 2.8, 2.0, $_[0]);
-%%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g', $t),
-%%:      sprintf(qq{
-%%:          --pre-plot 'set label "moving the endpoints..." at 5,8 font "serif,20"'}),
-%%:      $im_int]
-%%: });
 
 
 \begin{frame}
@@ -741,6 +768,8 @@ Exact solution with the modified Bessel function $\mathrm{K}_1$:
 &= m \  \mathrm{K}_1(mr)
 \end{split}
 \end{equation*}
+
+For the last equality, see \url{http://dlmf.nist.gov/10.32\#E8}.
 
 Therefore:
 
