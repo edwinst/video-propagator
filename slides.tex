@@ -433,6 +433,7 @@ This causes an exponential suppression of high momenta $p$:
 \begin{frame}
 Let's smear the fields by $\sigma$...
 
+\medskip
 \pause
 ...and then push the contour far past $p = \frac{1}{\sigma}$.
 \end{frame}
@@ -446,6 +447,55 @@ Let's smear the fields by $\sigma$...
 %:          --pre-plot 'set label "1/sigma = 30" at 5,8 font "serif,20"'
 %:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
 %:      $im_ints]
+%: });
+
+
+\begin{frame}
+Now all the "outer" parts of the contour are exponentially suppressed in the cutoff.
+
+\medskip
+\pause
+Let's neglect them...
+\end{frame}
+
+
+%: seq_name('smear-integral-2');
+%: animate(12, sub {
+%:     my $d = interpol_xaby(1, 0.2, 0.1, 0.2, 0, 2, 2, 2, $_[0]);
+%:     [sprintf($opts.' --Pr 70 --Pi 70 --d %.2g --smear 0.0333333', $d),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "1/sigma = 30" at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, 70),
+%:      $im_ints]
+%: });
+
+
+\begin{frame}
+For this pushed contour, the smearing makes no difference...
+\end{frame}
+
+
+%: seq_name('unsmear-integral-2');
+%: animate(8, sub {
+%:     my $isigma = interpol_xaby(1, 0.2, 0.1, 0.2, 30, 1000, 1000, 1000, $_[0]);
+%:     my $smear;
+%:     my $text;
+%:     my $im;
+%:     if ($isigma <= 999) {
+%:         $smear = sprintf(' --smear %.3g', 1/$isigma);
+%:         $text = sprintf('1/sigma = %.4g', $isigma);
+%:         $im = $im_ints;
+%:     }
+%:     else {
+%:         $smear = '';
+%:         $text = 'not smeared';
+%:         $im = $im_int;
+%:     }
+%:     [$opts.' --Pr 70 --Pi 70 --d 2'.$smear,
+%:      sprintf(qq{
+%:          --pre-plot 'set label "$text" at 5,8 font "serif,20"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, 70),
+%:      $im]
 %: });
 
 
