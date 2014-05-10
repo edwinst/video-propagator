@@ -42,6 +42,9 @@
 \newcommand{\integral}{\intii \dip \integrand}
 \newcommand{\cintegral}{\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}}
 
+\renewcommand\Re{\operatorname{Re}}
+\renewcommand\Im{\operatorname{Im}}
+
 \title{Contour integral for the free field propagator}
 \author{Edwin Steiner}
 \date{\today}
@@ -71,7 +74,6 @@ This work is licensed under a Creative Commons Attribution 4.0 International Lic
 
 
 \begin{frame}
-% XXX cite Peskin&Schroeder
 For a free massive \alert{scalar field}
 
 \pause
@@ -101,6 +103,9 @@ Plugging in the fields and using $\com{\ap}{\adpp} = (2\pi)^3 \delta(\vp - \vpp)
 $$\phixy = \frac{-i}{2(2\pi)^2 r} \intii \frac{p e^{ipr}}{\sqrtpm} \dip$$
 
 \pause
+\bigskip
+See Peskin \& Schroeder, \textit{An Introduction to Quantum Field Theory}, 2.50 to 2.52.
+
 \medskip
 (See end of video for details.)
 
@@ -352,10 +357,10 @@ Witness the miracle of \alert{Cauchy's theorem}!
 
 
 \begin{frame}
-Parts of the contour:
+Parts of the contour...
 
 \begin{itemize}
-\item Parts high in the upper half plane are neglibible.
+\item ... at large imaginary values are neglibible
 
 %: seq_name('contour-top');
 %: animate(10, sub {
@@ -378,7 +383,7 @@ Parts of the contour:
 %: });
 
 \pause
-\item Left and right vertical parts contribute the cutoff oscillations.
+\item ... at $\Re p = \pm \Lambda$ contribute the cutoff oscillations
 
 %: seq_name('contour-ii');
 %: animate(10, sub {
@@ -397,7 +402,7 @@ Parts of the contour:
 %: });
 
 \pause
-\item The U-shaped part contributes the (roughly) exponentially falling part.
+\item ... close to $\Re p = 0$ contribute the exponentially falling part
 
 %: seq_name('contour-u');
 %: animate(10, sub {
