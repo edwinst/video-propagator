@@ -74,9 +74,8 @@ gsl_complex f_envelope(gsl_complex p, const Params *params)
 
     if (params->smear)
     {
-        // we only consider the real part of p for the smearing
-        double sp = params->sigma * GSL_REAL(p);
-        env = gsl_complex_mul_real(env, exp(-sp*sp));
+        gsl_complex sp = gsl_complex_mul_real(p, params->sigma);
+        env = gsl_complex_mul(env, gsl_complex_exp(gsl_complex_negative(gsl_complex_mul(sp, sp))));
     }
 
     return env;
