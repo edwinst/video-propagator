@@ -293,6 +293,7 @@ double pos(double x)
 
 void define_contour_M(const Params *params,
                       double d,
+                      int skip_top,
                       Contour *contour)
 {
     memset(contour, 0, sizeof(*contour));
@@ -308,6 +309,8 @@ void define_contour_M(const Params *params,
         contour->points[1] = gsl_complex_rect(-Pr, Pi);
         contour->points[2] = gsl_complex_rect(+Pr, Pi);
         contour->points[3] = gsl_complex_rect(+Pr, d);
+
+        contour->skip[1] = skip_top;
     }
     else
     {
@@ -317,7 +320,10 @@ void define_contour_M(const Params *params,
             contour->points[i++] = gsl_complex_rect(-Pr, Pi*d);
 
         if (d < 2.0)
+        {
+            contour->skip[i] = skip_top;
             contour->points[i++] = gsl_complex_rect(-Pr+pos(d - 1.0)*(Pr - peps), Pi);
+        }
 
         if (d < 3.0)
             contour->points[i++] = gsl_complex_rect(-peps, Pi-pos(d - 2.0)*(Pi - params->m + peps));
@@ -329,13 +335,35 @@ void define_contour_M(const Params *params,
             contour->points[i++] = gsl_complex_rect(+peps, Pi-pos(d - 2.0)*(Pi - params->m + peps));
 
         if (d < 2.0)
+        {
+            contour->skip[i-1] = skip_top;
             contour->points[i++] = gsl_complex_rect(+Pr-pos(d - 1.0)*(Pr - peps), Pi);
+        }
 
         if (d < 1.0)
             contour->points[i++] = gsl_complex_rect(+Pr, Pi*d);
 
         contour->npoints = i;
     }
+}
+
+
+void define_contour_II(const Params *params,
+                       double d,
+                       Contour *contour)
+{
+    memset(contour, 0, sizeof(*contour));
+
+    double Pr = params->Pr;
+    double Pi = params->Pi;
+
+    contour->npoints = 4;
+    contour->points[0] = gsl_complex_rect(-Pr, d);
+    contour->points[1] = gsl_complex_rect(-Pr, Pi);
+    contour->points[2] = gsl_complex_rect(+Pr, Pi);
+    contour->points[3] = gsl_complex_rect(+Pr, d);
+
+    contour->skip[1] = 1;
 }
 
 
@@ -383,7 +411,9 @@ enum {
 };
 
 enum {
-    OPT_CONTOUR_M
+    OPT_CONTOUR_M,
+    OPT_CONTOUR_II,
+    OPT_CONTOUR_IUI
 };
 
 
@@ -432,21 +462,23 @@ int main(int argc, char **argv)
     const char* const short_options = "";
 
     const struct option long_options[] = {
-      { "help",      0, NULL, 'h' },
-      { "envelope",  0, &opt_select, OPT_SELECT_ENVELOPE },
-      { "integrand", 0, &opt_select, OPT_SELECT_INTEGRAND },
-      { "bessel",    0, &opt_select, OPT_SELECT_BESSEL },
-      { "d",         1, NULL, 'd' },
-      { "n",         1, NULL, 'n' },
-      { "m",         1, NULL, 'm' },
-      { "prefix",    1, NULL, 'p' },
-      { "r",         1, NULL, 'r' },
-      { "t",         1, NULL, 't' },
-      { "z0",        1, NULL, '0' },
-      { "z1",        1, NULL, '1' },
-      { "Pr",        1, NULL, 'P' },
-      { "Pi",        1, NULL, 'I' },
-      { NULL,        0, NULL, 0   } /* end */
+      { "help",         0, NULL, 'h' },
+      { "envelope",     0, &opt_select, OPT_SELECT_ENVELOPE },
+      { "integrand",    0, &opt_select, OPT_SELECT_INTEGRAND },
+      { "bessel",       0, &opt_select, OPT_SELECT_BESSEL },
+      { "contour-II",   0, &opt_contour, OPT_CONTOUR_II },
+      { "contour-IUI",  0, &opt_contour, OPT_CONTOUR_IUI },
+      { "d",            1, NULL, 'd' },
+      { "n",            1, NULL, 'n' },
+      { "m",            1, NULL, 'm' },
+      { "prefix",       1, NULL, 'p' },
+      { "r",            1, NULL, 'r' },
+      { "t",            1, NULL, 't' },
+      { "z0",           1, NULL, '0' },
+      { "z1",           1, NULL, '1' },
+      { "Pr",           1, NULL, 'P' },
+      { "Pi",           1, NULL, 'I' },
+      { NULL,           0, NULL, 0   } /* end */
     };
 
     int next_option;
@@ -541,7 +573,18 @@ int main(int argc, char **argv)
     else
     {
         Contour contour;
-        define_contour_M(&params, params.d, &contour);
+        switch (opt_contour)
+        {
+            case OPT_CONTOUR_II:
+                define_contour_II(&params, params.d, &contour);
+                break;
+            case OPT_CONTOUR_IUI:
+                define_contour_M(&params, params.d, 1, &contour);
+                break;
+            case OPT_CONTOUR_M:
+                define_contour_M(&params, params.d, 0, &contour);
+                break;
+        }
 
         FILE *os = fopen(ctx.filename_data, "w");
         tabulate_integral(

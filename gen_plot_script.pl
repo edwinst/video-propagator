@@ -20,6 +20,8 @@ my $opt_integrand = 0;
 my $opt_z0 = '0,0';
 my $opt_z1 = '0,0';
 my $opt_yrange;
+my $opt_contour_II;
+my $opt_contour_IUI;
 my @opt_pre_plot;
 my @opt_append_plot;
 
@@ -56,6 +58,8 @@ my $result = GetOptions(
         "pre-plot=s" => \@opt_pre_plot,
         "append-plot=s" => \@opt_append_plot,
         "yrange=s" => \$opt_yrange,
+        "contour-II" => \$opt_contour_II,
+        "contour-IUI" => \$opt_contour_IUI,
 );
 parse_complex(\$opt_z0);
 parse_complex(\$opt_z1);
