@@ -55,6 +55,9 @@
 %     XXX adjust vertical space
 %     XXX final rendering with full r-range
 %     XXX header/footer
+%     XXX label the window into the complex plane
+%     XXX color "contour" line differently than the integration contour
+%     XXX label contour windows
 
 \begin{document}
 
@@ -119,9 +122,16 @@ The only step left is to evaluate the integral
 $$\int_{-\infty}^{\infty} \dip \integrand$$
 
 \pause
-Problem: \alert{This integral does not converge!} (Neither in Lebesgue's
-nor Riemann's sense.)
-% XXX the oscillations do not decay at high momenta
+\medskip
+Problem: \alert{This integral does not converge!}
+
+\pause
+\medskip
+Riemann -- ``$\lim_{b \to \infty} \int_0^b \ldots$ does not exist.''
+
+\pause
+\medskip
+Lebesgue -- ``Positive and negative $\Re$ / $\Im$ parts are bounded away from zero on sets of infinite measure.''
 \end{frame}
 
 
@@ -209,8 +219,6 @@ $$\envelope$$
 %: });
 
 % XXX blink branch cut
-% XXX label the window into the complex plane
-% XXX color "contour" line differently than the integration contour
 
 \begin{frame}
 Including the exponential we get
@@ -271,8 +279,6 @@ which is
 %:      '', $im_igd]
 %: });
 
-% XXX introduce numerical integration
-
 \begin{frame}
 Let's do some numerical integration!
 \end{frame}
@@ -283,7 +289,7 @@ We try a sharp cutoff at $p = \pm \Lambda$:
 
 $$\int_{-\Lambda}^{+\Lambda} \dip \integrand$$
 
-% XXX move down
+\bigskip
 It looks like this as a function of $r$:
 \end{frame}
 
@@ -303,7 +309,6 @@ It looks like this as a function of $r$:
 %:      $im_int]
 %: });
 
-% XXX label contour windows
 
 
 \begin{frame}
@@ -351,9 +356,6 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
 %:      $im_int]
 %: });
-
-% XXX observations about parts of the contour
-% Parts pushed high into the upper half plane become negligible.
 
 
 \begin{frame}
@@ -581,8 +583,6 @@ Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 % XXX link to github code
 
 % XXX details of integral equations
-% XXX details of analytic approximation
-% XXX proof that integral does not converge
 
 
 \begin{frame}
