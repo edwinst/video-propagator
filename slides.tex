@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
 \usetheme{Berlin}
+\setbeamertemplate{navigation symbols}{}
 
 \usepackage{braket}
 \usepackage{esdiff}
@@ -47,6 +48,12 @@
 % XXX add git hash
 % XXX add CC-BY license
 
+% XXX Sunday tasks:
+%     XXX adjust timing
+%     XXX adjust vertical space
+%     XXX final rendering with full r-range
+%     XXX remove slide navigation symbols
+%     XXX header/footer
 
 \begin{document}
 
@@ -54,6 +61,14 @@
 
 \begin{frame}
 \titlepage
+\begin{tiny}
+\includegraphics[width=0.1\textwidth]{CC_BY.png}
+
+\medskip
+This work is licensed under a Creative Commons Attribution 4.0 International License.
+
+\url{http://creativecommons.org/licenses/by/4.0/}
+\end{tiny}
 \end{frame}
 
 
@@ -442,7 +457,7 @@ Let's smear the fields by $\sigma$...
 
 \medskip
 \pause
-...and then push the contour far past $p = \frac{1}{\sigma}$.
+...and then push the contour to $\Lambda \gg \frac{1}{\sigma}$.
 \end{frame}
 
 
@@ -478,7 +493,7 @@ Let's neglect them...
 
 
 \begin{frame}
-For this pushed contour, the smearing makes no difference...
+For this modified contour, the smearing makes no difference...
 \end{frame}
 
 

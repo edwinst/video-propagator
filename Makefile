@@ -32,7 +32,7 @@ video: calculate animate slides-png labels tmp/bessel-FUNCTION.dat
 	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
 
-slides.pdf: slides.tex
+slides.pdf: slides.tex CC_BY.png
 	pdflatex slides.tex
 
 slides: slides.pdf
