@@ -3,6 +3,8 @@
 
 \usetheme{Berlin}
 \setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{}
 
 \defbeamertemplate{section page}{nonumber}[1][]{%
   \begin{centering}
@@ -72,7 +74,6 @@
 %     XXX adjust timing
 %     XXX adjust vertical space
 %     XXX final rendering with full r-range
-%     XXX header/footer
 %     XXX credits
 %     XXX space in formulas
 %     XXX use blocks?
@@ -285,7 +286,7 @@ which is
 %:      '', $im_igd]
 %: });
 %: seq_name('rotate-2');
-%: animate(16, sub {
+%: animate(8, sub {
 %:     my $t = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 1, 1, 0, $_[0]);
 %:     my @z0 = interpol_complex(0.01,0, 8,0, $t);
 %:     my @z1 = interpol_complex(0.01,2, 8,2, $t);
