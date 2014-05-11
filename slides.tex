@@ -1,5 +1,5 @@
 %\errorcontextlines 10000
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 \usetheme{Berlin}
 \setbeamertemplate{navigation symbols}{}
@@ -174,8 +174,8 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 %:     my $m = interpol_xaby(5, 0.1, 0.1, 0.1, 1, 0.2, 3, 1, $_[0]);
 %:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,20"'
-%:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,20"'}, $m),
+%:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,26"'
+%:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,26"'}, $m),
 %:      $im_env]
 %: });
 
@@ -213,13 +213,13 @@ $$\envelope$$
 %:         $preplot .= q{ --pre-plot 'set grid x2tics ; set x2tics (0.5) format "" scale 0'};
 %:     }
 %:     if ($y > 1.2) {
-%:         $preplot .= q{ --pre-plot 'set label "branch cut" at 0.5,2 center font "serif,20"'};
+%:         $preplot .= q{ --pre-plot 'set label "branch cut" at 0.5,2 center font "serif,26"'};
 %:     }
 %:     if ($y > 1.4) {
 %:         $preplot .= q{ --pre-plot 'set arrow from 0.45,1.5 to 0.49,1.5 head'};
 %:         $preplot .= q{ --pre-plot 'set arrow from 0.55,1.5 to 0.51,1.5 head'};
-%:         $im .= ' label-branch-cut-neg.png -geometry +280+125 -composite';
-%:         $im .= ' label-branch-cut-pos.png -geometry +570+125 -composite';
+%:         $im .= ' label-branch-cut-neg.png -geometry +358+150 -composite';
+%:         $im .= ' label-branch-cut-pos.png -geometry +730+150 -composite';
 %:     }
 %:     [sprintf('--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y),
 %:      $preplot, $im_env.$im]
@@ -249,14 +249,14 @@ which is
 %:     my $r = interpol_xaby(5, 0.1, 0.1, 0.1, 2, 0.5, 10, 2,$_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r %.3g', $r),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying r..." at 0.25,2 font "serif,20"'
-%:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,20"'}, $r),
+%:          --pre-plot 'set label "varying r..." at 0.25,2 font "serif,26"'
+%:          --pre-plot 'set label "r = %4.2g" at 0.25,1.5 font "serif,26"'}, $r),
 %:      $im_igd]
 %: });
 
 %: animate(10, sub {
 %:     my $y = interpol_xaby(2, 0.1, 0.1, 0.1, 0, 2, 2, 0, $_[0]);
-%:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,20"' : '';
+%:     my $preplot = ($y > 1.2) ? 'set label "branch cut" at 0.5,2 center font "serif,26"' : '';
 %:     [sprintf('--integrand --z0 -10,%.3g --z1 10,%.3g --m 1', $y, $y),
 %:      "--pre-plot '$preplot'", $im_igd]
 %: });
@@ -311,8 +311,8 @@ It looks like this \alert{as a function of $r$}:
 %:     my $Pr = interpol_xaby(5, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
 %:     [sprintf($opts.' --Pr %.3g --Pi 0 --d 0', $Pr),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_int]
 %: });
 
@@ -347,7 +347,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 
 %: animate(10, sub {
 %:     my $t = interpol_xaby(1, 0.1, 0.1, 0.1, 0, 45, 0, 45, $_[0]);
-%:     my $preplot = q{--pre-plot 'set label "pushing the contour..." at 5,8 font "serif,20"'};
+%:     my $preplot = q{--pre-plot 'set label "pushing the contour..." at 5,8 font "serif,26"'};
 %:     if ($_[0] > 0.1) {
 %:         $preplot .= q{ --pre-plot 'set arrow from 1.9,6.8 to 1,5 head'};
 %:         $preplot .= q{ --pre-plot 'set label "no change" at 2,7'};
@@ -360,8 +360,8 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:     my $Pr = interpol_xaby(3, 0.1, 0.1, 0.1, 45, 25, 60, 45, $_[0]);
 %:     [sprintf($opts.' --Pr %.3g --Pi 45 --d 0', $Pr),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_int]
 %: });
 
@@ -460,8 +460,8 @@ This causes an \alert{exponential suppression of high momenta} $p$:
 %:     my $sigma = interpol_xaby(3, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 1/30, $_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "varying sigma..." at 0.25,2 font "serif,20"'
-%:          --pre-plot 'set label "sigma = %4.2g" at 0.25,1.5 font "serif,20"'}, $sigma),
+%:          --pre-plot 'set label "varying σ..." at 0.25,2 font "serif,26"'
+%:          --pre-plot 'set label "σ = %4.2g" at 0.25,1.5 font "serif,26"'}, $sigma),
 %:      $im_igds]
 %: });
 
@@ -480,8 +480,8 @@ Let's smear the fields by $\sigma$...
 %:     my $Pr = interpol_xaby(4, 0.1, 0.1, 0.1, 15, 70, 15, 70, $_[0]);
 %:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "1/sigma = 30" at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, $Pr),
+%:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_ints]
 %: });
 
@@ -500,8 +500,8 @@ Let's neglect them...
 %:     my $d = interpol_xaby(1, 0.2, 0.1, 0.2, 0, 2, 2, 2, $_[0]);
 %:     [sprintf($opts.' --Pr 70 --Pi 70 --d %.2g --smear 0.0333333', $d),
 %:      sprintf(qq{
-%:          --pre-plot 'set label "1/sigma = 30" at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, 70),
+%:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, 70),
 %:      $im_ints]
 %: });
 
@@ -529,8 +529,8 @@ For this modified contour, the smearing makes no difference...
 %:     }
 %:     [$opts.' --Pr 70 --Pi 70 --d 2'.$smear,
 %:      sprintf(qq{
-%:          --pre-plot 'set label "$text" at 5,8 font "serif,20"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,20"'}, 70),
+%:          --pre-plot 'set label "$text" at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, 70),
 %:      $im]
 %: });
 
@@ -591,7 +591,7 @@ Let's \alert{compare} our numerical result with the exact and approximate analyt
 %:         $plot .= q{ --pre-plot 'm = 1' --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3' };
 %:     }
 %:     if ($t > 0.3) {
-%:         $plot .= q{ --pre-plot 'set label "zooming..." at 5,8 font "serif,20"' };
+%:         $plot .= q{ --pre-plot 'set label "zooming..." at 5,8 font "serif,26"' };
 %:     }
 %:     [sprintf($opts.' --Pr 70 --Pi 70 --d 2'),
 %:      sprintf(' --yrange %.2g:%.2g', -$y, $y).$plot,

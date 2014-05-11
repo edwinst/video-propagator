@@ -1,6 +1,10 @@
 SHELL = /bin/bash
 CFLAGS = -g -Wall -std=c99
 
+# video resolution
+SX = 1280
+SY = 720
+
 all: calculate
 
 clean: clean-tex
@@ -18,7 +22,7 @@ calculate: calculate.c
 animate: animate.pl slides.tex
 	rm -rf links Makefile.generated
 	mkdir -p links
-	./animate.pl <slides.tex
+	./animate.pl --plot-options '--terminal "pngcairo dashed size $(SX),$(SY)"' <slides.tex
 
 tmp/bessel-FUNCTION.dat: calculate
 	mkdir -p tmp
@@ -41,7 +45,7 @@ slides: slides.pdf
 slides-png: slides.pdf
 	rm -rf slides-png
 	mkdir -p slides-png
-	gs -sDEVICE=pngalpha -sOutputFile=slides-png/slide-%04d.png -r144 -dBATCH -dNOPAUSE slides.pdf
+	gs -sDEVICE=pngalpha -sOutputFile=slides-png/slide-%04d.png -g$(SX)x$(SY) -dFitPage -dBATCH -dNOPAUSE slides.pdf
 
 label-%.pdf: label-%.tex
 	pdflatex $<
@@ -50,4 +54,4 @@ label-%-crop.pdf: label-%.pdf
 	pdfcrop $<
 
 label-%.png: label-%-crop.pdf
-	convert -density 160 $< $@
+	convert -density 200 $< $@

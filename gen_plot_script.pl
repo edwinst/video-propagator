@@ -74,7 +74,7 @@ if (!$result)
 
 sub emit_plot_contour_inset
 {
-    my ($file, $ox, $oy, $sx, $sy, $xmin, $xmax, $ymin, $ymax, $plot_m) = @_;
+    my ($file, $ox, $oy, $sx, $sy, $xmin, $xmax, $ymin, $ymax, $plot_m, $linestyle) = @_;
 
     printf $file
      "set origin %g, %g\n"
@@ -108,8 +108,10 @@ sub emit_plot_contour_inset
         printf $file "\"<echo '0 %g'\" with points notitle, \\\n     ", $opt_m;
     }
 
+    $linestyle = q{lw 2 lt 1 lc rgb 'blue'} if !defined($linestyle);
+
     printf $file
-    "\"%s\" using 1:2 with lines lw 2 lt 1 lc rgb 'blue' notitle\n\n", $opt_filename_contour;
+    "\"%s\" using 1:2 with lines $linestyle notitle\n\n", $opt_filename_contour;
 }
 
 
@@ -146,13 +148,13 @@ sub emit_plot_commands_function
     }
     print $file ")\n";
 
-    print $file "set object 1 rectangle from graph 0.62,0.05 to graph 0.92,0.4 front fc rgb \"white\"\n";
+    print $file "set object 1 rectangle from graph 0.69,0.025 to graph 0.98,0.4 front fc rgb \"white\"\n";
 
     print $file "$_\n" for (@opt_pre_plot);
 
     print $file "\nplot ";
 
-    printf $file "\"%s\" using 1:7:6 with filledcurve lt 1 lc rgb \"orange\" title \"abs\", \\\n     "
+    printf $file "\"%s\" using 1:7:6 with filledcurve lt 1 lc rgb \"orange\" title \"± abs\", \\\n     "
                ."\"%s\" using 1:4 with lines lt 1 lc 1 title \"real\", \\\n     "
                ."\"%s\" using 1:5 with lines lt 1 lc 3 title \"imag\"",
             $opt_filename_data, $opt_filename_data, $opt_filename_data;
@@ -163,7 +165,8 @@ sub emit_plot_commands_function
     print $file "unset xlabel\n";
     print $file "unset object 1\n";
 
-    emit_plot_contour_inset($file, 0.6, 0.1, 0.3, 0.3, -10.5,+10.5, -1, 4, 1);
+    print $file "set title \"complex plane\"\n";
+    emit_plot_contour_inset($file, 0.66, 0.1, 0.3, 0.35, -10.5,+10.5, -1, 4, 1, q{lc rgb "black" lt 2 lw 3});
 
     print $file "\nunset multiplot\n";
 }
