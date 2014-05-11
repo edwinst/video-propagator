@@ -34,7 +34,7 @@ labels: label-integral.png label-integral-smeared.png label-envelope.png label-i
 video: calculate animate slides-png labels tmp/bessel-FUNCTION.dat
 	mkdir -p tmp
 	$(MAKE) -f Makefile.generated gen-frames
-	avconv -y -r 24 -i links/frame-%06d.png -r 24 -qscale 4 -vcodec mpeg4 test.avi
+	avconv -y -r 24 -i links/frame-%06d.png -r 24 -vcodec libx264 -b:v 5000k -maxrate 5000k -bufsize 1000k -threads 0 test.mp4
 
 slides.pdf: slides.tex CC_BY.png
 	pdflatex slides.tex
