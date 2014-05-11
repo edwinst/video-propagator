@@ -180,6 +180,8 @@ sub animate
         add_make_rule(["seq-$sequence_name"], \@frames);
         add_make_rule(["display-seq-$sequence_name"], ["seq-$sequence_name"],
                       "display ".join(' ', @frames));
+        add_make_rule(["display-first-$sequence_name"], [$frames[0]],
+                      "display $frames[0]");
     }
 
     undef $sequence_name;
