@@ -4,6 +4,16 @@
 \usetheme{Berlin}
 \setbeamertemplate{navigation symbols}{}
 
+\defbeamertemplate{section page}{nonumber}[1][]{%
+  \begin{centering}
+    {\usebeamerfont{section name}\usebeamercolor[fg]{section name}#1}
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=12pt,center]{part title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+
 \usepackage{braket}
 \usepackage{esdiff}
 
@@ -30,6 +40,10 @@
 \newcommand{\diffop}{\mathop{}\!\mathrm{d}}
 \newcommand{\dip}{\diffop p}
 \newcommand{\du}{\diffop u}
+\newcommand{\dxp}{\diffop x'}
+\newcommand{\dyp}{\diffop y'}
+\newcommand{\dxi}{\diffop \xi}
+\newcommand{\drp}{\diffop r'}
 \newcommand{\drho}{\diffop \rho}
 \newcommand{\dtheta}{\diffop \theta}
 
@@ -42,6 +56,9 @@
 \newcommand{\limdel}{\lim_{\delta \to 0}}
 \newcommand{\integral}{\intii \dip \integrand}
 \newcommand{\cintegral}{\int_m^\infty \drho \frac{\rho e^{-\rho r}}{\sqrt{\rho^2 - m^2}}}
+
+\newcommand{\phit}{\tilde{\phi}}
+\newcommand{\sigmat}{\tilde{\sigma}}
 
 \renewcommand\Re{\operatorname{Re}}
 \renewcommand\Im{\operatorname{Im}}
@@ -611,8 +628,13 @@ Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
 
 % XXX link to github code
 
-% XXX details of smearing
 
+\section{Calculational details}
+
+\begin{frame}
+\setbeamertemplate{section page}[nonumber]
+\sectionpage
+\end{frame}
 
 \begin{frame}
 Plugging in the fields, we get:
@@ -774,6 +796,50 @@ Therefore:
 
 \begin{equation*}
 \phixy = \frac{m}{(2\pi)^2 r} \  \mathrm{K}_1(mr) \quad \textrm{for} \quad x^0 = y^0,\ mr > 0
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+Plugging a 1-dimensionally smeared field $\phit(x) = N \int_{-\infty}^{+\infty} \dxp e^{-\frac{(x' - x)^2}{2 \sigma^2}} \phi(x')$
+with $N = (\sigma \sqrt{2\pi})^{-1}$ into a bilinear form $B$ with $B(\phi(x), \phi(y)) = F(x - y)$:
+
+\begin{equation*}
+B(\phit(x), \phit(y)) = N^2 \int \dxp \dyp e^{-\frac{(x' - x)^2}{2 \sigma^2}} e^{-\frac{(y' - y)^2}{2 \sigma^2}} F(x' - y')
+\end{equation*}
+
+writing $\xi = x' - x$, $r = x - y$, $r' = x' - y'$, $\delta = r' - r$, $\sigmat = \sqrt{2} \sigma$:
+
+\begin{equation*}
+\begin{split}
+&B(\phit(x), \phit(y)) = N^2 \int \dxi \drp e^{-\frac{\xi^2}{2 \sigma^2}} e^{-\frac{(\xi - (r' - r))^2}{2 \sigma^2}} F(r') \\
+&= N^2 \int \dxi \drp e^{-\sigma^{-2} \left\{ (\xi - \frac{\delta}{2})^2 - \frac{\delta^2}{4} \right\}} F(r')
+= N^2 \int \dxi \drp e^{-\frac{\xi^2}{\sigma^2}} e^{-\frac{\delta^2}{4 \sigma^2}} F(r') \\
+&= \sigma \sqrt{\pi} N^2 \int \drp e^{-\frac{\delta^2}{2 \sigmat^2}} F(r')
+= (\sigmat \sqrt{2\pi})^{-1} \int \drp e^{-\frac{(r' - r)^2}{2 \sigmat^2}} F(r')
+= \frac{ \int \drp e^{-\frac{(r' - r)^2}{2 \sigmat^2}} F(r') }{ \int \drp e^{-\frac{(r' - r)^2}{2 \sigmat^2}} }
+\end{split}
+\end{equation*}
+\end{frame}
+
+
+\begin{frame}
+For $B(\phi(x), \phi(y)) = F(r) = e^{ipr}$ we get:
+
+\begin{equation*}
+\begin{split}
+&B(\phit(x), \phit(y)) = (\sigmat \sqrt{2\pi})^{-1} \intii \drp e^{-\frac{(r' - r)^2}{2 \sigmat^2}} e^{ipr'} \\
+&= (\sigmat \sqrt{2\pi})^{-1} \intii \drp e^{-\frac{(r' - r - ip\sigmat^2)^2}{2 \sigmat^2}} e^{ipr} e^{-\frac{\sigmat^2 p^2}{2}}
+\end{split}
+\end{equation*}
+
+Shifting $r' \to r'  + r + ip\sigmat^2$ for $|r| < R$ and $r' \to r' + r$ for $r \gg R$ and letting $R \to \infty$, we get:
+
+\begin{equation*}
+\begin{split}
+&B(\phit(x), \phit(y)) = (\sigmat \sqrt{2\pi})^{-1} \intii \drp e^{-\frac{{r'}^2}{2 \sigmat^2}} e^{ipr} e^{-\frac{\sigmat^2 p^2}{2}} \\
+&= e^{ipr} e^{-\frac{\sigmat^2 p^2}{2}} = e^{ipr} e^{-(\sigma p)^2}
+\end{split}
 \end{equation*}
 \end{frame}
 
