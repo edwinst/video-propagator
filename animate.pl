@@ -11,9 +11,7 @@ my $opt_prefix = 'tmp/';
 my $opt_frame_rate = 24;
 my $opt_frame_div = 4;
 my $opt_plot_options = '';
-
 my $opt_links_dir = 'links';
--d $opt_links_dir || mkdir($opt_links_dir) or die;
 
 my $frame_counter = 0;
 my @frame_links;
@@ -34,7 +32,11 @@ my $im_int = 'label-integral.png -geometry +120+60 -composite';
 my $im_ints = 'label-integral-smeared.png -geometry +120+60 -composite';
 
 my $result = GetOptions(
+        "frame-div=s" => \$opt_frame_div,
+        "frame-rate=s" => \$opt_frame_rate,
+        "links-dir=s" => \$opt_links_dir,
         "plot-options=s" => \$opt_plot_options,
+        "prefix=s" => \$opt_prefix,
 );
 
 if (!$result)
@@ -43,6 +45,7 @@ if (!$result)
     exit(1);
 }
 
+-d $opt_links_dir || mkdir($opt_links_dir) or die;
 open(my $makefile, '>', 'Makefile.generated') or die;
 
 
