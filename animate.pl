@@ -18,6 +18,8 @@ my $opt_links_dir = 'links';
 my $frame_counter = 0;
 my @frame_links;
 my $page_counter = 0;
+my $slide_seen = 0;
+my $frame_time;
 
 my %make_rules_seen;
 
@@ -188,6 +190,23 @@ sub animate
 }
 
 
+sub add_slide_frames
+{
+    if ($slide_seen)
+    {
+        $frame_time = 3 if !defined($frame_time);
+
+        $page_counter++;
+        my $fn_frame = sprintf("slides-png/slide-%04d.png", $page_counter);
+        my $nframes = $frame_time * $opt_frame_rate;
+        add_frame($fn_frame) for 1..$nframes;
+
+        undef $frame_time;
+        $slide_seen = 0;
+    }
+}
+
+
 my @animations;
 my $code = '';
 while (<>)
@@ -195,7 +214,12 @@ while (<>)
     if (/^\s*%:(.*)/)
     {
         my ($line) = ($1);
+        add_slide_frames();
         $code .= "$line\n";
+    }
+    elsif (/^\s*%.(\d+(\.\d+)?)/)
+    {
+        $frame_time = $1;
     }
     else
     {
@@ -208,13 +232,12 @@ while (<>)
 
         if (/^\s*\\begin{frame}/ || /^\s*\\pause\b/)
         {
-            $page_counter++;
-            my $fn_frame = sprintf("slides-png/slide-%04d.png", $page_counter);
-            my $nframes = 3 * $opt_frame_rate;
-            add_frame($fn_frame) for 1..$nframes;
+            add_slide_frames();
+            $slide_seen = 1;
         }
     }
 }
+add_slide_frames();
 
 print $makefile "\n.PHONY: link-frames render-frames gen-frames\n";
 print $makefile "\nlink-frames:\n";
