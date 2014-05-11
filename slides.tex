@@ -73,11 +73,6 @@
 %     XXX adjust vertical space
 %     XXX final rendering with full r-range
 %     XXX header/footer
-%     XXX label the window into the complex plane
-%     XXX color "contour" line differently than the integration contour
-%     XXX label contour windows
-%     XXX label abs value as +/-
-%     XXX display abs value one-sided for integral
 %     XXX display 1/sigma in the contour window
 %     XXX credits
 %     XXX space in formulas
@@ -98,6 +93,9 @@ This work is licensed under a Creative Commons Attribution 4.0 International Lic
 \url{http://creativecommons.org/licenses/by/4.0/}
 \end{tiny}
 \end{frame}
+
+
+\section{Introduction}
 
 
 \begin{frame}
@@ -158,6 +156,8 @@ Riemann -- ``$\lim_{b \to \infty} \int_0^b \ldots$ does not exist.'' (It oscilla
 Lebesgue -- ``Positive and negative $\Re$ / $\Im$ parts are bounded away from zero on sets of infinite measure.''
 \end{frame}
 
+
+\section{The integrand}
 
 \begin{frame}
 Let's consider the integrand
@@ -302,6 +302,8 @@ which is
 %:     [sprintf('--integrand --z0 %.3g,%.3g --z1 %.3g,%.3g --m 1 --r 2', @z0, @z1),
 %:      '', $im_igd]
 %: });
+
+\section{The integral}
 
 \begin{frame}
 Let's do some numerical integration!
@@ -614,6 +616,8 @@ Let's \alert{compare} our numerical result with the exact and approximate analyt
 %:      $im_int]
 %: });
 
+
+\section{Credits}
 
 \begin{frame}
 \frametitle{Software Credits}
