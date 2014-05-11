@@ -196,7 +196,7 @@ sub emit_plot_commands
     print $file "$_\n" for (@opt_pre_plot);
 
     printf $file "plot ".join(", \\\n     ",
-            "\"$opt_filename_data\" using 1:5:4 with filledcurve lc rgb \"orange\" lt 1 title \"abs\"",
+            "\"$opt_filename_data\" using 1:4 with filledcurve y1=0 lc rgb \"orange\" lt 1 title \"abs\"",
             "\"$opt_filename_data\" using 1:2 with lines lt 1 lc 1 title \"real\"",
             "\"$opt_filename_data\" using 1:3 with lines lt 1 lc 3 title \"imag\"",
             @opt_append_plot);
@@ -207,9 +207,12 @@ sub emit_plot_commands
     print $file "unset xlabel\n";
     print $file "\n\n";
 
-    emit_plot_contour_inset($file, 0.2, 0.1, 0.3, 0.3, -90,+90, -10,+90, 0);
-    emit_plot_contour_inset($file, 0.45, 0.1, 0.3, 0.3, -90,+90, -1, $opt_m+4, 0);
-    emit_plot_contour_inset($file, 0.7, 0.1, 0.3, 0.3, -4.5,+4.5, -1, $opt_m+3, 1);
+    print $file "set title \"contour\"\n";
+    emit_plot_contour_inset($file, 0.2, 0.1, 0.3, 0.35, -90,+90, -10,+90, 0);
+    print $file "set title \"contour (zoom)\"\n";
+    emit_plot_contour_inset($file, 0.45, 0.1, 0.3, 0.35, -90,+90, -1, $opt_m+4, 0);
+    print $file "set title \"contour (zoom)\"\n";
+    emit_plot_contour_inset($file, 0.7, 0.1, 0.3, 0.35, -4.5,+4.5, -1, $opt_m+3, 1);
 
     print $file "\nunset multiplot\n";
 }

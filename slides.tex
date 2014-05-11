@@ -312,7 +312,7 @@ It looks like this \alert{as a function of $r$}:
 %:     [sprintf($opts.' --Pr %.3g --Pi 0 --d 0', $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,26"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_int]
 %: });
 
@@ -361,7 +361,7 @@ Witness the miracle of \alert{Cauchy's theorem}!
 %:     [sprintf($opts.' --Pr %.3g --Pi 45 --d 0', $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the cutoff..." at 5,8 font "serif,26"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_int]
 %: });
 
@@ -378,11 +378,10 @@ Parts of the contour...
 %:     my $preplot = '';
 %:     if ($_[0] > 0.1) {
 %:         $preplot .= q{ --pre-plot 'set arrow from 1.9,6.8 to 1,5 head'};
-%:         $preplot .= q{ --pre-plot 'set label "no (visible) change" at 2,7'};
+%:         $preplot .= q{ --pre-plot 'set label "no (visible) change" at 2,7 font "serif,18"'};
 %:     }
 %:     if ($_[0] > 0.2) {
-%:         $preplot .= q{ --pre-plot 'set arrow from 3.2,-3.7 to 3.2,-4.9 head'};
-%:         $preplot .= q{ --pre-plot 'set label "omitting top part" at 2.5,-3'};
+%:         $preplot .= q{ --pre-plot 'set label "omitting top part" at 2.5,-6.5 font "serif,16" textcolor rgb "red"'};
 %:     }
 %:     my $copts = '';
 %:     if ((($t >= 0.25) && ($t < 0.5)) || ($t >= 0.75)) {
@@ -401,8 +400,7 @@ Parts of the contour...
 %:     my $preplot = '';
 %:     my $copts = ' --contour-IUI';
 %:     if ($t > 0.1) {
-%:         $preplot .= q{ --pre-plot 'set arrow from 3.2,-3.7 to 3.2,-4.9 head'};
-%:         $preplot .= q{ --pre-plot 'set label "omitting middle part" at 2.5,-3'};
+%:         $preplot .= q{ --pre-plot 'set label "omitting middle part" at 2.3,-6.5 font "serif,16" textcolor rgb "red"'};
 %:     }
 %:     if ((($t >= 0.25) && ($t < 0.5)) || ($t >= 0.75)) {
 %:         $copts = ' --contour-II';
@@ -481,7 +479,7 @@ Let's smear the fields by $\sigma$...
 %:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, $Pr),
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
 %:      $im_ints]
 %: });
 
@@ -501,7 +499,7 @@ Let's neglect them...
 %:     [sprintf($opts.' --Pr 70 --Pi 70 --d %.2g --smear 0.0333333', $d),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, 70),
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, 70),
 %:      $im_ints]
 %: });
 
@@ -530,7 +528,7 @@ For this modified contour, the smearing makes no difference...
 %:     [$opts.' --Pr 70 --Pi 70 --d 2'.$smear,
 %:      sprintf(qq{
 %:          --pre-plot 'set label "$text" at 5,8 font "serif,26"'
-%:          --pre-plot 'set label "cutoff = %4.2g" at 5,5 font "serif,26"'}, 70),
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, 70),
 %:      $im]
 %: });
 
