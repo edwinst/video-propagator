@@ -558,7 +558,7 @@ int main(int argc, char **argv)
             case -1: break; // end of options
 
             default:
-                abort ();
+                abort();
         }
     }
     while (next_option != -1);
@@ -577,6 +577,7 @@ int main(int argc, char **argv)
             case OPT_SELECT_ENVELOPE : func = (ComplexFunction) &f_envelope; break;
             case OPT_SELECT_INTEGRAND: func = (ComplexFunction) &f_integrand; break;
             case OPT_SELECT_BESSEL   : func = (ComplexFunction) &f_bessel; break;
+            default: abort();
         }
         tabulate(os, func, &params, opt_z0, opt_z1, opt_n);
         fclose(os);
@@ -602,6 +603,7 @@ int main(int argc, char **argv)
             case OPT_CONTOUR_M:
                 define_contour_M(&params, params.d, 0, &contour);
                 break;
+            default: abort();
         }
 
         FILE *os = fopen(ctx.filename_data, "w");
