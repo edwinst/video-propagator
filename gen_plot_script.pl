@@ -196,7 +196,7 @@ sub emit_plot_commands
     print $file "$_\n" for (@opt_pre_plot);
 
     printf $file "plot ".join(", \\\n     ",
-            "\"$opt_filename_data\" using 1:4 with filledcurve y1=0 lc rgb \"orange\" lt 1 title \"abs\"",
+            "\"$opt_filename_data\" using 1:(0):4 with filledcurve lc rgb \"orange\" lt 1 title \"abs\"",
             "\"$opt_filename_data\" using 1:2 with lines lt 1 lc 1 title \"real\"",
             "\"$opt_filename_data\" using 1:3 with lines lt 1 lc 3 title \"imag\"",
             @opt_append_plot);
