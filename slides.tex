@@ -147,7 +147,9 @@ See also Peskin \& Schroeder, \textit{An Introduction to Quantum Field Theory}, 
 
 \begin{frame}
 The only step left is to evaluate the integral
+%.2
 
+\pause
 $$\int_{-\infty}^{\infty} \dip \integrand$$
 
 \pause
@@ -217,7 +219,7 @@ It gets more interesting for complex $p$:
 
 \pause
 $$\envelope$$
-%.5
+%..5
 
 \begin{itemize}
 
@@ -521,7 +523,7 @@ This causes an \alert{exponential suppression of high momenta} $p$:
 
 %: seq_name('smear-integrand');
 %: animate(12, sub {
-%:     my $sigma = interpol_xaby(3, 0.2, 0.3, 0.1, 0, 0.2, 0.01, 1/30, $_[0]);
+%:     my $sigma = interpol_xaby(3, 0.2, 0.2, 0.1, 0, 0.2, 0.01, 1/30, $_[0]);
 %:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying σ..." at 0.25,2 font "serif,26"'
