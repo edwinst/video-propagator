@@ -8,10 +8,12 @@ SY = 720
 FRAME_RATE = 24
 FRAME_DIV  = 1
 
+DATA_DIR = tmp
+
 all: calculate
 
 clean: clean-tex
-	rm -rf slides-png links tmp calculate \
+	rm -rf slides-png links $(DATA_DIR) calculate \
                Makefile.generated \
                test.avi
 
@@ -25,17 +27,18 @@ calculate: calculate.c
 animate: animate.pl slides.tex
 	rm -rf links Makefile.generated
 	mkdir -p links
-	./animate.pl --frame-rate $(FRAME_RATE) --frame-div $(FRAME_DIV) --plot-options '--terminal "pngcairo dashed size $(SX),$(SY)"' <slides.tex
+	./animate.pl --prefix $(DATA_DIR)/ --frame-rate $(FRAME_RATE) --frame-div $(FRAME_DIV) \
+                     --plot-options '--terminal "pngcairo dashed size $(SX),$(SY)"' < slides.tex
 
-tmp/bessel-FUNCTION.dat: calculate
-	mkdir -p tmp
-	./calculate --prefix tmp/bessel- --bessel --m 1 --z0 0.1 --z1 10
+$(DATA_DIR)/bessel-FUNCTION.dat: calculate
+	mkdir -p $(DATA_DIR)
+	./calculate --prefix $(DATA_DIR)/bessel- --bessel --m 1 --z0 0.1 --z1 10
 
 labels: label-integral.png label-integral-smeared.png label-envelope.png label-integrand.png label-integrand-smeared.png \
         label-branch-cut-neg.png label-branch-cut-pos.png
 
-video: calculate animate slides-png labels tmp/bessel-FUNCTION.dat
-	mkdir -p tmp
+video: calculate animate slides-png labels $(DATA_DIR)/bessel-FUNCTION.dat
+	mkdir -p $(DATA_DIR)
 	$(MAKE) -f Makefile.generated gen-frames
 	avconv -y -r $(FRAME_RATE) -i links/frame-%06d.png -r $(FRAME_RATE) -vcodec libx264 -b:v 5000k -maxrate 5000k -bufsize 1000k -threads 0 test.mp4
 

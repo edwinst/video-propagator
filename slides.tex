@@ -671,7 +671,7 @@ Let's \alert{compare}:
 %:     my $plot = '';
 %:     my $text = 'numerical';
 %:     if ($t > 0.1) {
-%:         $plot .= q{ --append-plot '"tmp/bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"' };
+%:         $plot .= qq{ --append-plot '"${opt_prefix}bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"' };
 %:         $text = 'exact';
 %:     }
 %:     if ($t > 0.2) {
