@@ -188,8 +188,8 @@ gsl_complex integrate_line_segment(Params *params,
     double result_imag_cos, abserr_imag_cos;
     double result_imag_sin, abserr_imag_sin;
 
-    double epsabs = 0;
-    double epsrel = 1e-4;
+    double epsabs = 1e-12;
+    double epsrel = 1e-12;
 
     lsp.part = REAL;
     gsl_integration_qawo(&F, a, epsabs, epsrel, table_size, ws, table_cos, &result_real_cos, &abserr_real_cos);
