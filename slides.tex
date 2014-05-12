@@ -205,7 +205,7 @@ $$\envelope \ \alert{\rightarrow \ -1} \ \textrm{ for } p \rightarrow -\infty.$$
 
 %: animate(10, sub {
 %:     my $m = interpol_xaby(5, 0.1, 0.1, 0.1, 1, 0.2, 3, 1, $_[0]);
-%:     [sprintf('--envelope --z0 -10 --z1 10 --m %g', $m),
+%:     [sprintf('--envelope --z0 -10 --z1 10 --m %.4g', $m),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying the mass..." at 0.25,2 font "serif,26"'
 %:          --pre-plot 'set label "m = %4.2g" at 0.25,1.5 font "serif,26"'}, $m),
@@ -256,7 +256,7 @@ $$\envelope$$
 %:         $im .= ' label-branch-cut-neg.png -geometry +358+150 -composite';
 %:         $im .= ' label-branch-cut-pos.png -geometry +730+150 -composite';
 %:     }
-%:     [sprintf('--envelope --z0 -10,%g --z1 10,%g --m 1', $y, $y),
+%:     [sprintf('--envelope --z0 -10,%.4g --z1 10,%.4g --m 1', $y, $y),
 %:      $preplot, $im_env.$im]
 %: });
 
