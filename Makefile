@@ -1,12 +1,12 @@
 SHELL = /bin/bash
-CFLAGS = -g -Wall -std=c99
+CFLAGS = -O2 -Wall -std=c99
 
 # video resolution
 SX = 1280
 SY = 720
 
 FRAME_RATE = 24
-FRAME_DIV  = 4
+FRAME_DIV  = 1
 
 all: calculate
 
