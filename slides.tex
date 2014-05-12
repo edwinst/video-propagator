@@ -149,16 +149,17 @@ $$\int_{-\infty}^{\infty} \dip \integrand$$
 
 \pause
 \medskip
-Problem: \alert{This integral does not converge!}
+\alert{This integral does not converge!}
 
 \pause
+\bigskip
 \bigskip
 Riemann -- ``$\lim_{b \to \infty} \int_0^b \ldots$ does not exist.'' (It oscillates.)
 
 \pause
 \bigskip
 Lebesgue -- ``Positive and negative $\Re$ / $\Im$ parts are bounded away from zero on sets of infinite measure.''
-%.4.5
+%.6
 \end{frame}
 
 
@@ -168,15 +169,18 @@ Lebesgue -- ``Positive and negative $\Re$ / $\Im$ parts are bounded away from ze
 Let's consider the integrand
 
 $$\integrand$$
+%.2
 
+\pause
 as a function of a \alert{complex} variable $p$.
-
 \end{frame}
 
 
 \begin{frame}
 Actually, let's first look at:
+%.1
 
+\pause
 $$\envelope$$
 
 \pause
@@ -184,13 +188,15 @@ No surprises on the real line:
 %.2
 
 \pause
-$$\envelope \ \rightarrow \ 1 \ \textrm{ for } p \rightarrow +\infty,$$
+$$\envelope \ \alert{\rightarrow \ 1} \ \textrm{ for } p \rightarrow +\infty,$$
+%.1
 
-$$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
+\pause
+$$\envelope \ \alert{\rightarrow \ -1} \ \textrm{ for } p \rightarrow -\infty.$$
 
 \end{frame}
 
-% animate envelope on the real line, varying m
+
 %: animate(3, sub { ['--envelope --z0 -10 --z1 10 --m 1', '', $im_env] });
 
 %: animate(10, sub {
@@ -206,7 +212,9 @@ $$\envelope \ \rightarrow \ -1 \ \textrm{ for } p \rightarrow -\infty.$$
 \begin{frame}
 It gets more interesting for complex $p$:
 
+\pause
 $$\envelope$$
+%.5
 
 \begin{itemize}
 
@@ -219,14 +227,14 @@ $$\envelope$$
 
 \pause
 \item The \alert{branch cut} lies along the imaginary axis towards $+i\infty$ and $-i\infty$.
-(Due to the branch cut of the square root on the negative real axis.)
+%.3
+\pause
+
+(From branch cut of $\sqrt{\ldots}$ on the negative real axis.)
 %.6
 \end{itemize}
 \end{frame}
 
-% animate envelope on the real line, rotate to imaginary axis
-
-% animate to show the branch cut
 
 %: seq_name('branch-cut');
 %: animate(20, sub {
@@ -249,15 +257,18 @@ $$\envelope$$
 %:      $preplot, $im_env.$im]
 %: });
 
-% XXX blink branch cut
+% XXX blink branch cut?
+
 
 \begin{frame}
 Including the exponential we get
+%.1
 
+\pause
 $$\integrand$$
 
 which is
-%.2
+%.1
 
 \begin{itemize}
 \pause
@@ -265,8 +276,10 @@ which is
 
 \pause
 \item \alert{exponentially suppressed} in the upper half plane.
+%.4
 \end{itemize}
 \end{frame}
+
 
 %: animate(3, sub { ['--integrand --z0 -10 --z1 10 --m 1 --r 2', '', $im_igd] });
 
@@ -311,6 +324,7 @@ which is
 %:      '', $im_igd]
 %: });
 
+
 \section{The integral}
 
 \begin{frame}
@@ -320,14 +334,16 @@ Let's do some numerical integration!
 
 \begin{frame}
 We try a sharp \alert{cutoff} at $p = \pm \Lambda$:
+%.2
 
+\pause
 $$\int_{-\Lambda}^{+\Lambda} \dip \integrand$$
 
+\pause
 \bigskip
-It looks like this \alert{as a function of $r$}:
+It looks like this \alert{as a function of $r$}...
 \end{frame}
 
-% show integral, vary Lambda, vary m(?)
 
 %: $opts = '--n 1250 --z0 0.1 --z1 10 --m 1';
 %: animate(3, sub {
@@ -344,9 +360,8 @@ It looks like this \alert{as a function of $r$}:
 %: });
 
 
-
 \begin{frame}
-We see a function with:
+We see:
 %.1
 
 \begin{itemize}
@@ -359,8 +374,12 @@ We see a function with:
 
 \pause
 \bigskip
-By deforming the integration contour we can show that indeed \alert{only}
-the cutoff momentum contributes to the oscillations.
+By deforming the contour we can show:
+
+\pause
+\begin{itemize}
+\item \alert{only} the cutoff $p$ creates the oscillations.
+\end{itemize}
 %.6
 \end{frame}
 
@@ -369,7 +388,6 @@ the cutoff momentum contributes to the oscillations.
 Witness the miracle of \alert{Cauchy's theorem}!
 \end{frame}
 
-% animate the M contour
 
 %: animate(3, sub { [$opts.' --Pr 45 --Pi 0 --d 0', '', $im_int] });
 
@@ -401,7 +419,7 @@ Parts of the contour...
 
 \pause
 \begin{itemize}
-\item \alert<1>{... at large imaginary values are negligible}
+\item \alert<2>{... at large imaginary values are negligible}
 
 %: seq_name('contour-top');
 %: animate(10, sub {
@@ -423,7 +441,7 @@ Parts of the contour...
 %: });
 
 \pause
-\item \alert<2>{... at $\Re p = \pm \Lambda$ contribute the cutoff oscillations}
+\item \alert<3>{... at $\Re p = \pm \Lambda$ contribute the cutoff oscillations}
 
 %: seq_name('contour-ii');
 %: animate(10, sub {
@@ -441,7 +459,7 @@ Parts of the contour...
 %: });
 
 \pause
-\item \alert<3>{... close to $\Re p = 0$ contribute the exponential part}
+\item \alert<4>{... close to $\Re p = 0$ contribute the exponential part}
 
 %: seq_name('contour-u');
 %: animate(10, sub {
@@ -456,7 +474,7 @@ Parts of the contour...
 
 
 \begin{frame}
-It is clear that the oscillations are an \alert{artifact of the cutoff}.
+Apparently the oscillations are an \alert{artifact of the cutoff}.
 
 \bigskip
 \pause
@@ -465,27 +483,39 @@ More carefully:
 
 \pause
 \medskip
-We consider the fields as \alert{distributions} and \alert{smear} them with test functions.
-%.4
+We consider the fields as \alert{distributions}...
+%.2
+
+\pause
+...and \alert{smear} them with test functions.
+%.3
 \end{frame}
 
 
 \begin{frame}
-For simplicity, let's apply a \alert{Gaussian} smearing $e^{-\frac{(x' - x)^2}{2\sigma^2}}$ to the fields only along $\vr$.
-%.4
+For simplicity we try:
+%.1
+
+\pause
+\alert{Gaussian} smearing $e^{-\frac{(x' - x)^2}{2\sigma^2}}$ of $\phi$ only along $\vr$.
+%.5
 
 \medskip
 \pause
 This causes an \alert{exponential suppression of high momenta} $p$:
+%.2
 
+\pause
 \begin{equation*}
-\intii \dip \integrand e^{-(\sigma p)^2}
+\intii \dip \integrand \alert{e^{-(\sigma p)^2}}
 \end{equation*}
+%.1
 
 \pause
 \medskip
 (See end of video for details.)
 \end{frame}
+
 
 %: seq_name('smear-integrand');
 %: animate(12, sub {
@@ -519,7 +549,7 @@ Let's smear the fields by $\sigma$...
 
 
 \begin{frame}
-Now all the ``outer'' parts of the contour are exponentially suppressed in the cutoff.
+All the ``outer'' parts of the contour are exponentially small now.
 
 \medskip
 \pause
@@ -539,7 +569,7 @@ Let's neglect them...
 
 
 \begin{frame}
-For this modified contour, the smearing makes no difference...
+For this modified contour, smearing makes no difference...
 \end{frame}
 
 
@@ -568,10 +598,12 @@ For this modified contour, the smearing makes no difference...
 
 
 \begin{frame}
-In the limit, the integral along this U-shaped contour $C$ becomes
+In the limit, the integral along this \alert{U}-shaped contour $C$ becomes
+%.3
 
+\pause
 \begin{equation*}
-\int_C \dip \integrand = 2i \cintegral
+\int_C \dip \integrand = 2i \alert{\cintegral}
 \end{equation*}
 
 \medskip
@@ -582,9 +614,11 @@ In the limit, the integral along this U-shaped contour $C$ becomes
 
 \begin{frame}
 This integral \alert{converges} and we get \alert{approximately}
+%.3
 
+\pause
 \begin{equation*}
-\phixy \approx \sqrt{\frac{m}{32\pi^3 r^3}} \ e^{-mr}
+\phixy \approx \sqrt{\frac{m}{32\pi^3 r^3}} \ \alert{e^{-mr}}
 \end{equation*}
 
 \medskip
@@ -598,9 +632,11 @@ for $r \gg \frac{1}{m}$
 
 \begin{frame}
 The \alert{exact} result can be written with a \alert{modified Bessel function} $\mathrm{K}_1$:
+%.3
 
+\pause
 \begin{equation*}
-\phixy = \frac{m}{(2\pi)^2 r} \  \mathrm{K}_1(mr)
+\phixy = \frac{m}{(2\pi)^2 r} \  \alert{\mathrm{K}_1(mr)}
 \end{equation*}
 
 \medskip
@@ -610,8 +646,20 @@ The \alert{exact} result can be written with a \alert{modified Bessel function} 
 
 
 \begin{frame}
-Let's \alert{compare} our numerical result with the exact and approximate analytic results...
+Let's \alert{compare}:
+%.1
+
+\begin{enumerate}
+\pause
+\item our \alert<2>{numerical} result with
+%.2
+\pause
+\item \alert<3>{exact} and
+%..5
+\pause
+\item \alert<4>{approximate} analytic results...
 %.4
+\end{enumerate}
 \end{frame}
 
 
@@ -620,15 +668,19 @@ Let's \alert{compare} our numerical result with the exact and approximate analyt
 %:     my $t = $_[0];
 %:     my $y = interpol_xaby(1, 0.4, 0.1, 0.5, 15, 0.1, 0.1, 0.1, $t);
 %:     my $plot = '';
+%:     my $text = 'numerical';
 %:     if ($t > 0.1) {
 %:         $plot .= q{ --append-plot '"tmp/bessel-FUNCTION.dat" using 2:5 with lines lc rgb "black" lt 2 lw 3 title "2*m*K1(mr)"' };
+%:         $text = 'exact';
 %:     }
 %:     if ($t > 0.2) {
 %:         $plot .= q{ --pre-plot 'm = 1' --append-plot 'sqrt(2*pi*m/x)*exp(-m*x) with lines lc rgb "black" lt 3' };
+%:         $text = 'exact & approximate';
 %:     }
 %:     if ($t > 0.3) {
-%:         $plot .= q{ --pre-plot 'set label "zooming..." at 5,8 font "serif,26"' };
+%:         $text = 'zooming...';
 %:     }
+%:     $plot .= qq{ --pre-plot 'set label "$text" at 5,8 font "serif,26"' };
 %:     [sprintf($opts.' --Pr 70 --Pi 70 --d 2'),
 %:      sprintf(' --yrange %.2g:%.2g', -$y, $y).$plot,
 %:      $im_int]
@@ -644,7 +696,10 @@ Numerical integration: GNU Scientific Library
 
 Plotting: gnuplot
 
-Presentation: \TeX + \LaTeX + Beamer, ImageMagick, avconv
+Typesetting: \TeX, \LaTeX, Beamer
+
+Conversion: ImageMagick, avconv
+%.6
 \end{frame}
 
 
