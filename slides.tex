@@ -69,18 +69,26 @@
 \author{Edwin Steiner}
 \date{\today}
 % XXX add git hash
-
-% XXX Sunday tasks:
-%     XXX credits
-%     XXX spell check
-%     XXX GPL license for code
-%     XXX blink branch cut?
+% XXX credits
+% XXX GPL license for code
+% XXX blink branch cut?
 % XXX link to github code
 
 
 \begin{document}
 
-% XXX teaser (with Cauchy?)
+%: $opts = '--n 1250 --z0 0.1 --z1 10 --m 1';
+
+%: seq_name('teaser');
+%: animate(3, sub {
+%:     my $Pr = interpol_xaby(1, 0.1, 0.1, 0.1, 15, 70, 70, 70, $_[0]);
+%:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
+%:      sprintf(qq{
+%:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
+%:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
+%:      $im_ints]
+%: });
+
 
 \begin{frame}
 \titlepage
@@ -344,7 +352,6 @@ It looks like this \alert{as a function of $r$}...
 \end{frame}
 
 
-%: $opts = '--n 1250 --z0 0.1 --z1 10 --m 1';
 %: animate(3, sub {
 %:     [$opts.' --Pr 45 --Pi 0 --d 0', '', $im_int]
 %: });
