@@ -1,4 +1,11 @@
 
-This work is licensed under a Creative Commons Attribution 4.0 International License.
+The file slides.tex and the video created from it is licensed under a
+Creative Commons Attribution 4.0 International License.
 
 http://creativecommons.org/licenses/by/4.0/
+
+---
+
+The files calculate.c, gen_plot_script.pl, animate.pl are licensed under the
+                    GNU GENERAL PUBLIC LICENSE
+(see file GPL.txt).
