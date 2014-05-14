@@ -83,7 +83,7 @@
 %: seq_name('teaser');
 %: animate(3, sub {
 %:     my $Pr = interpol_xaby(1, 0.1, 0.1, 0.1, 15, 70, 70, 70, $_[0]);
-%:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
+%:     [sprintf($opts.' --Pr %.3g --Pi %.3g --d 0 --smear 0.0333333', $Pr, $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
 %:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
@@ -472,7 +472,7 @@ Parts of the contour...
 %: animate(10, sub {
 %:     my $d = interpol_xaby(1, 0.1, 0.1, 0.7, 0, 1, 1, 1, $_[0]);
 %:     my $preplot = '';
-%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.2g --contour-IUI', $d),
+%:     [sprintf($opts.' --Pr 45 --Pi 45 --d %.3g --contour-IUI', $d),
 %:      $preplot, $im_int]
 %: });
 
@@ -527,7 +527,7 @@ This causes an \alert{exponential suppression of high momenta} $p$:
 %: seq_name('smear-integrand');
 %: animate(12, sub {
 %:     my $sigma = interpol_xaby(3, 0.2, 0.2, 0.1, 0, 0.2, 0.01, 1/30, $_[0]);
-%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.2g', $sigma),
+%:     [sprintf('--integrand --z0 -10 --z1 10 --m 1 --r 2 --smear %.3g', $sigma),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "varying σ..." at 0.25,2 font "serif,26"'
 %:          --pre-plot 'set label "σ = %4.2g" at 0.25,1.5 font "serif,26"'}, $sigma),
@@ -547,7 +547,7 @@ Let's smear the fields by $\sigma$...
 %: seq_name('smear-integral');
 %: animate(24, sub {
 %:     my $Pr = interpol_xaby(4, 0.1, 0.1, 0.1, 15, 70, 15, 70, $_[0]);
-%:     [sprintf($opts.' --Pr %.2g --Pi %.2g --d 0 --smear 0.0333333', $Pr, $Pr),
+%:     [sprintf($opts.' --Pr %.3g --Pi %.3g --d 0 --smear 0.0333333', $Pr, $Pr),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
 %:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, $Pr),
@@ -567,7 +567,7 @@ Let's neglect them...
 %: seq_name('smear-integral-2');
 %: animate(12, sub {
 %:     my $d = interpol_xaby(1, 0.2, 0.1, 0.2, 0, 2, 2, 2, $_[0]);
-%:     [sprintf($opts.' --Pr 70 --Pi 70 --d %.2g --smear 0.0333333', $d),
+%:     [sprintf($opts.' --Pr 70 --Pi 70 --d %.3g --smear 0.0333333', $d),
 %:      sprintf(qq{
 %:          --pre-plot 'set label "1/σ = 30" at 5,8 font "serif,26"'
 %:          --pre-plot 'set label "Λ = %.2g" at 5,5 font "serif,26"'}, 70),
@@ -689,7 +689,7 @@ Let's \alert{compare}:
 %:     }
 %:     $plot .= qq{ --pre-plot 'set label "$text" at 5,8 font "serif,26"' };
 %:     [sprintf($opts.' --Pr 70 --Pi 70 --d 2'),
-%:      sprintf(' --yrange %.2g:%.2g', -$y, $y).$plot,
+%:      sprintf(' --yrange %.3g:%.3g', -$y, $y).$plot,
 %:      $im_int]
 %: });
 
