@@ -14,3 +14,7 @@ with this kind of oscillatory integrals. I share it in the hope that it might
 be interesting for someone else.
 
 If you have any corrections or questions, please contact me (edwin.steiner@gmx.net).
+
+---
+
+See the file LICENSE for license information.
